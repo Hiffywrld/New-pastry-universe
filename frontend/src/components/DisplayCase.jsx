@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { artFor, defaultSizeKey } from '../menu/art.js';
 import { formatNaira, formatShort } from '../lib/format.js';
 import Sticker from './Sticker.jsx';
+import RollingNumber from './RollingNumber.jsx';
 import { track } from '../lib/analytics.js';
 import { flyToCart } from '../lib/motion.js';
 
@@ -304,7 +305,9 @@ export default function DisplayCase({ items, active, open, picks, onActive, onOp
               )}
 
               <div className="buy">
-                <p className="buy-price">{formatNaira((choice?.price ?? size?.priceMin ?? 0) * qty)}</p>
+                <p className="buy-price">
+                  <RollingNumber value={(choice?.price ?? size?.priceMin ?? 0) * qty} />
+                </p>
                 <div className="qty" role="group" aria-label="Quantity">
                   <button type="button" onClick={() => setQty((q) => Math.max(1, q - 1))} aria-label="One less" disabled={qty <= 1}>
                     −

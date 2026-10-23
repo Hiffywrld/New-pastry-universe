@@ -2967,3 +2967,267 @@ body::before {
     width: 100%;
   }
 }
+
+/* =====================================================================
+   Liquid Glass + spring motion
+   Glass only on floating layers (header, buttons over photos, drawers,
+   the game HUD). Content stays solid so it's easy to read.
+   ===================================================================== */
+:root {
+  --glass-tint: rgba(255, 253, 249, 0.58);
+  --glass-tint-strong: rgba(255, 253, 249, 0.76);
+  --glass-dark: rgba(32, 30, 30, 0.72);
+  --glass-edge: rgba(255, 255, 255, 0.85);
+  --glass-line: rgba(32, 30, 30, 0.08);
+  --glass-shadow: 0 10px 34px -10px rgba(40, 25, 10, 0.28);
+  --glass-blur: blur(22px) saturate(185%);
+  /* Springs: a small, natural overshoot. Fallbacks first, real springs below. */
+  --spring-smooth: cubic-bezier(0.25, 1.1, 0.4, 1);
+  --spring-bouncy: cubic-bezier(0.34, 1.45, 0.64, 1);
+}
+@supports (transition-timing-function: linear(0, 1)) {
+  :root {
+    --spring-smooth: linear(0, 0.007, 0.028 2.2%, 0.11 4.6%, 0.244 7.4%, 0.6 13.6%, 0.773 17.4%, 0.893 21.6%, 0.967 26.1%, 1.012 31.2%, 1.031 36.2%, 1.035 41.5%, 1.024 50.5%, 1.008 61.9%, 1.002 73.7%, 1);
+    --spring-bouncy: linear(0, 0.013, 0.05 2.3%, 0.199 5%, 0.437 8.1%, 0.896 14.2%, 1.039 17.4%, 1.123 20.8%, 1.146 23.1%, 1.144 25.9%, 1.084 32.6%, 1.025 39.4%, 0.993 46.6%, 0.986 52.7%, 0.997 66.8%, 1.001 80%, 1);
+  }
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --glass-tint: rgba(34, 31, 30, 0.55);
+    --glass-tint-strong: rgba(34, 31, 30, 0.74);
+    --glass-edge: rgba(255, 255, 255, 0.16);
+    --glass-line: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 10px 34px -10px rgba(0, 0, 0, 0.6);
+  }
+}
+:root[data-theme='dark'] {
+  --glass-tint: rgba(34, 31, 30, 0.55);
+  --glass-tint-strong: rgba(34, 31, 30, 0.74);
+  --glass-edge: rgba(255, 255, 255, 0.16);
+  --glass-line: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 10px 34px -10px rgba(0, 0, 0, 0.6);
+}
+
+/* The glass material */
+.glass,
+.case-nav,
+.case-back,
+.case-hint,
+.sheet-close,
+.account-btn,
+.order-card-game,
+.cat-row {
+  background: var(--glass-tint);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow:
+    inset 0 1px 0 var(--glass-edge),
+    inset 0 -1px 0 var(--glass-line),
+    inset 0 0 0 1px var(--glass-line),
+    var(--glass-shadow);
+}
+.case-nav,
+.case-back,
+.sheet-close,
+.account-btn {
+  background-image: linear-gradient(150deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 45%, rgba(255, 255, 255, 0.12));
+}
+.cart-btn {
+  background: var(--glass-dark);
+  background-image: linear-gradient(150deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 45%);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 8px 24px -8px rgba(32, 30, 30, 0.45);
+}
+
+/* Header: a full-width glass bar that becomes a floating capsule on scroll */
+.site-header {
+  background: var(--glass-tint);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--glass-line);
+  transition: background-color 0.35s ease, border-color 0.35s ease;
+}
+.header-row {
+  border-radius: 0;
+  transition:
+    max-width 0.65s var(--spring-smooth),
+    margin 0.65s var(--spring-smooth),
+    padding 0.65s var(--spring-smooth),
+    border-radius 0.65s var(--spring-smooth),
+    box-shadow 0.4s ease,
+    background-color 0.4s ease;
+}
+.site-header.is-scrolled {
+  background: transparent;
+  border-color: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.site-header.is-scrolled .header-row {
+  max-width: 1080px;
+  width: calc(100% - 20px);
+  margin: 6px auto 4px;
+  padding: 5px 6px 5px 12px;
+  border-radius: 999px;
+  background: var(--glass-tint-strong);
+  background-image: linear-gradient(170deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 55%);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow:
+    inset 0 1px 0 var(--glass-edge),
+    inset 0 0 0 1px var(--glass-line),
+    var(--glass-shadow);
+}
+
+/* Category chips float over the menu as you scroll it */
+.cat-row {
+  position: sticky;
+  top: calc(env(safe-area-inset-top, 0px) + 74px);
+  z-index: 6;
+  width: fit-content;
+  max-width: 100%;
+  padding: 6px;
+  border-radius: 999px;
+}
+.cat-row button {
+  border-color: transparent;
+  background: transparent;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.4s var(--spring-bouncy);
+}
+.cat-row button[aria-pressed='false']:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Cart drawer as a sheet of glass */
+.drawer {
+  background: var(--glass-tint-strong);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  backdrop-filter: blur(28px) saturate(190%);
+  box-shadow: inset 1px 0 0 var(--glass-edge), -18px 0 50px rgba(0, 0, 0, 0.18), 80px 0 0 0 var(--paper);
+  animation: slide-in 0.6s var(--spring-smooth);
+}
+.drawer-scrim {
+  background: rgba(20, 16, 14, 0.28);
+}
+.drawer-foot {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* Game HUD: the order card floats over the flying toppings */
+.order-card-game {
+  background: var(--glass-tint);
+}
+.need {
+  background: rgba(255, 255, 255, 0.45);
+}
+.need.done {
+  transform: scale(1.04);
+}
+
+/* Spring motion */
+.track,
+.slot {
+  transition: transform 0.9s var(--spring-smooth);
+}
+.piece {
+  transition: transform 0.9s var(--spring-smooth), filter 0.6s var(--ease), opacity 0.6s var(--ease);
+}
+.case {
+  transition: height 0.85s var(--spring-smooth);
+}
+.sheet-photo {
+  transition: transform 0.7s var(--spring-bouncy);
+}
+.btn,
+.seg button,
+.chips button,
+.cat-row button,
+.menu-card,
+.cart-btn,
+.qty button {
+  transition-property: transform, background-color, border-color, color, box-shadow;
+  transition-duration: 0.45s, 0.2s, 0.2s, 0.2s, 0.3s;
+  transition-timing-function: var(--spring-bouncy), ease, ease, ease, ease;
+}
+.btn:active,
+.seg button:active,
+.chips button:active,
+.cat-row button:active,
+.cart-btn:active,
+.qty button:active {
+  transform: scale(0.94);
+}
+.seg button[aria-pressed='true'],
+.chips button[aria-pressed='true'] {
+  animation: pick 0.45s var(--spring-bouncy);
+}
+@keyframes pick {
+  from {
+    transform: scale(0.92);
+  }
+}
+.cart-count {
+  animation: bump 0.6s var(--spring-bouncy);
+}
+.sheet-root.animate-in .sheet,
+::view-transition-new(pu-sheet) {
+  animation-duration: 0.6s;
+  animation-timing-function: var(--spring-smooth);
+}
+::view-transition-group(*) {
+  animation-duration: 0.6s;
+  animation-timing-function: var(--spring-smooth);
+}
+.sheet {
+  box-shadow: 0 -16px 50px rgba(0, 0, 0, 0.25), 0 120px 0 0 var(--paper);
+}
+@media (min-width: 721px) {
+  .sheet {
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Pages ease in when you move between them */
+.page-enter {
+  animation: page-in 0.55s var(--spring-smooth);
+}
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/* Rolling prices */
+.roll {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Solid fallbacks for people who turn transparency off */
+@media (prefers-reduced-transparency: reduce) {
+  .glass,
+  .case-nav,
+  .case-back,
+  .case-hint,
+  .sheet-close,
+  .account-btn,
+  .order-card-game,
+  .cat-row,
+  .drawer,
+  .site-header,
+  .site-header.is-scrolled .header-row {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--surface);
+    background-image: none;
+  }
+  .cart-btn {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--btn-bg);
+    background-image: none;
+  }
+}

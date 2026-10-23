@@ -7,6 +7,7 @@ import { flyToCart } from '../lib/motion.js';
 import { track } from '../lib/analytics.js';
 import { useCart } from '../state/cart.jsx';
 import Sticker from './Sticker.jsx';
+import RollingNumber from './RollingNumber.jsx';
 
 /**
  * The panel that opens when a treat is tapped on the menu. A bottom sheet on
@@ -203,7 +204,7 @@ export default function ProductSheet({ item, initialSize, morphing, onClose }) {
               <button type="button" className="btn btn-primary sheet-add" onClick={addToCart} disabled={!choice?.inStock}>
                 {choice?.inStock ? (
                   <>
-                    Add to cart <span className="num">{formatNaira(choice.price * qty)}</span>
+                    Add to cart <RollingNumber value={choice.price * qty} />
                   </>
                 ) : (
                   'Sold out'

@@ -884,3 +884,88 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* Liquid Glass in the kitchen */
+.admin-top {
+  background: var(--glass-tint);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border-bottom-color: var(--glass-line);
+}
+.admin-nav {
+  position: relative;
+}
+.nav-lens {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  border-radius: 12px;
+  background: var(--orange);
+  background-image: linear-gradient(160deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 55%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 6px 18px -6px rgba(240, 163, 52, 0.7);
+  transition:
+    transform 0.6s var(--spring-bouncy),
+    width 0.6s var(--spring-smooth),
+    height 0.6s var(--spring-smooth);
+  pointer-events: none;
+}
+.admin-nav a {
+  position: relative;
+  z-index: 1;
+  transition: color 0.3s ease;
+}
+.admin-nav a.active {
+  background: transparent;
+}
+.toast {
+  background: rgba(20, 18, 18, 0.72);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 16px 40px rgba(0, 0, 0, 0.35);
+  animation: toast-in 0.6s var(--spring-bouncy);
+}
+.kpi,
+.card {
+  transition: transform 0.45s var(--spring-bouncy), border-color 0.2s ease;
+}
+.kpi-link:hover {
+  transform: translateY(-2px);
+}
+@media (max-width: 760px) {
+  /* A floating glass tab bar, like iOS */
+  .admin-side {
+    left: 12px;
+    right: 12px;
+    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    padding: 6px;
+    border-radius: 26px;
+    background: rgba(24, 22, 22, 0.66);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 14px 40px rgba(0, 0, 0, 0.35);
+  }
+  .admin {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+  }
+  .nav-lens {
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.16);
+    background-image: linear-gradient(160deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 60%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  }
+  .admin-nav a.active {
+    color: var(--orange);
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .admin-top,
+  .toast,
+  .admin-side {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .admin-top {
+    background: var(--surface);
+  }
+}

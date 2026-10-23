@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { NavLink, Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { api } from '../api/index.js';
 import { formatNaira } from '../lib/format.js';
 import { LiveProvider, useLive } from './live.jsx';
@@ -50,10 +50,29 @@ function Toasts({ onOpen }) {
   );
 }
 
+// A glass "lens" that slides to whichever tab is active.
+function useLens(navRef) {
+  const location = useLocation();
+  const [box, setBox] = useState(null);
+  useLayoutEffect(() => {
+    const measure = () => {
+      const active = navRef.current?.querySelector('a.active');
+      if (!active) return;
+      setBox({ x: active.offsetLeft, y: active.offsetTop, w: active.offsetWidth, h: active.offsetHeight });
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [location.pathname, navRef]);
+  return box;
+}
+
 function Shell({ me }) {
   const { connected, visitors, sound, setSound } = useLive();
   const navigate = useNavigate();
   const [drawer, setDrawer] = useState(null);
+  const navRef = useRef(null);
+  const lens = useLens(navRef);
 
   return (
     <div className="admin">
@@ -62,7 +81,14 @@ function Shell({ me }) {
           <img src={logo} alt="" width="36" height="36" />
           <span>Kitchen</span>
         </div>
-        <nav className="admin-nav" aria-label="Admin">
+        <nav className="admin-nav" aria-label="Admin" ref={navRef}>
+          {lens && (
+            <span
+              className="nav-lens"
+              aria-hidden="true"
+              style={{ width: lens.w, height: lens.h, transform: `translate(${lens.x}px, ${lens.y}px)` }}
+            />
+          )}
           <NavLink to="/" end>
             <Icon name="dashboard" />
             <span>Dashboard</span>

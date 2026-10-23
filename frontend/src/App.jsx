@@ -30,7 +30,9 @@ function ShopLayout() {
     <>
       <Header simple={location.pathname !== '/'} />
       <main>
-        <Outlet />
+        <div className="page-enter" key={location.pathname}>
+          <Outlet />
+        </div>
       </main>
       <Footer store={menu?.store} />
       <CartDrawer />

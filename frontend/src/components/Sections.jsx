@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { BRAND } from '../brand.js';
 import { formatNaira } from '../lib/format.js';
@@ -87,8 +87,25 @@ export function GamePromo() {
 
 export function Header({ simple = false }) {
   const { count, setOpen, bump } = useCart();
+  const [scrolled, setScrolled] = useState(false);
+
+  // The header turns into a floating glass capsule once you scroll.
+  useEffect(() => {
+    let raf = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => setScrolled(window.scrollY > 24));
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, []);
+
   return (
-    <header className="site-header">
+    <header className={`site-header${scrolled ? ' is-scrolled' : ''}`}>
       <div className="wrap header-row">
         <Link to="/" className="brand">
           <img src={logo} alt="" width="44" height="44" />
