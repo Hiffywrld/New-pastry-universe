@@ -1,0 +1,982 @@
+{
+  "source": "snapshot",
+  "updatedAt": "2026-10-23T01:51:26.213Z",
+  "items": [
+    {
+      "id": "banana-bread",
+      "name": "Banana Bread",
+      "category": "Banana bread",
+      "tag": "Bestseller",
+      "description": "Our classic loaf. Get it plain or topped with raisins, coconut chips, chocolate chips or almond nuts. The mini feeds one person.",
+      "photos": [
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/3238ccb36b443e1babc24b04ee5abe7199f9d969.jpeg",
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/64a83361a64c09c086c9e7f580b605be45905ae9.jpeg",
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/554cea703f97049faea529e2ede846f3a89d96cc.jpeg",
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/61cb22e865cba70e92790c7d26f8e8a29e51b226.jpeg",
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/e8af22ea1dd98c878e0f6e6342f9aa081eedb880.jpeg",
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/e0c457d7e3f52fdb961bb561f79bdb8860d7b018.jpeg"
+      ],
+      "sizes": [
+        {
+          "key": "mini",
+          "label": "Mini",
+          "url": "https://pastryuniverse.bumpa.shop/products/banana-bread-mini/2247913",
+          "productId": 2247913,
+          "choices": [
+            {
+              "label": "No toppings",
+              "price": 2000,
+              "inStock": true
+            },
+            {
+              "label": "Raisins",
+              "price": 2000,
+              "inStock": true
+            },
+            {
+              "label": "Almond nuts",
+              "price": 2000,
+              "inStock": true
+            },
+            {
+              "label": "Chocolate chips",
+              "price": 2000,
+              "inStock": true
+            },
+            {
+              "label": "Coconut chips",
+              "price": 2000,
+              "inStock": true
+            }
+          ],
+          "priceMin": 2000,
+          "priceMax": 2000,
+          "inStock": true
+        },
+        {
+          "key": "medium",
+          "label": "Medium",
+          "url": "https://pastryuniverse.bumpa.shop/products/banana-bread-medium/2272027",
+          "productId": 2272027,
+          "choices": [
+            {
+              "label": "No toppings",
+              "price": 3000,
+              "inStock": true
+            },
+            {
+              "label": "Coconut chips",
+              "price": 3500,
+              "inStock": true
+            },
+            {
+              "label": "Chocolate chips",
+              "price": 3500,
+              "inStock": true
+            },
+            {
+              "label": "Raisins",
+              "price": 3500,
+              "inStock": true
+            },
+            {
+              "label": "Almond nuts",
+              "price": 3500,
+              "inStock": true
+            }
+          ],
+          "priceMin": 3000,
+          "priceMax": 3500,
+          "inStock": true
+        },
+        {
+          "key": "large",
+          "label": "Large",
+          "url": "https://pastryuniverse.bumpa.shop/products/banana-bread-large/2246155",
+          "productId": 2246155,
+          "choices": [
+            {
+              "label": "Raisins",
+              "price": 7500,
+              "inStock": true
+            },
+            {
+              "label": "Coconut chips",
+              "price": 7500,
+              "inStock": true
+            },
+            {
+              "label": "Chocolate chips",
+              "price": 7500,
+              "inStock": true
+            },
+            {
+              "label": "Almond nuts",
+              "price": 7500,
+              "inStock": true
+            },
+            {
+              "label": "No toppings",
+              "price": 7500,
+              "inStock": true
+            }
+          ],
+          "priceMin": 7500,
+          "priceMax": 7500,
+          "inStock": true
+        },
+        {
+          "key": "pan",
+          "label": "Pan-sized",
+          "url": "https://pastryuniverse.bumpa.shop/products/bread-pan-sized-banana-bread/4924722",
+          "productId": 4924722,
+          "choices": [],
+          "priceMin": 8000,
+          "priceMax": 8000,
+          "inStock": true
+        },
+        {
+          "key": "jumbo",
+          "label": "Jumbo",
+          "url": "https://pastryuniverse.bumpa.shop/products/banana-bread-jumbo-size/2244699",
+          "productId": 2244699,
+          "choices": [
+            {
+              "label": "No toppings",
+              "price": 15000,
+              "inStock": true
+            },
+            {
+              "label": "Raisins and coconut chips",
+              "price": 16500,
+              "inStock": true
+            },
+            {
+              "label": "Coconut chips and almond nuts",
+              "price": 16500,
+              "inStock": true
+            },
+            {
+              "label": "Chocolate chips and raisins",
+              "price": 16500,
+              "inStock": true
+            }
+          ],
+          "priceMin": 15000,
+          "priceMax": 16500,
+          "inStock": true
+        },
+        {
+          "key": "family",
+          "label": "Family tray",
+          "url": "https://pastryuniverse.bumpa.shop/products/banana-bread-family-size-tray/2244675",
+          "productId": 2244675,
+          "choices": [
+            {
+              "label": "No toppings",
+              "price": 19000,
+              "inStock": true
+            },
+            {
+              "label": "Raisins, coconut chips and chocolate chips",
+              "price": 22500,
+              "inStock": true
+            },
+            {
+              "label": "Coconut chips, almond nuts and chocolate chips",
+              "price": 22500,
+              "inStock": true
+            },
+            {
+              "label": "Chocolate chips, raisins and almond nuts",
+              "price": 22500,
+              "inStock": true
+            }
+          ],
+          "priceMin": 19000,
+          "priceMax": 22500,
+          "inStock": true
+        }
+      ],
+      "priceMin": 2000,
+      "inStock": true
+    },
+    {
+      "id": "birthday",
+      "name": "Birthday Banana Cake",
+      "category": "Cakes",
+      "tag": null,
+      "description": "Loaded with assorted nuts inside and covered with chocolate or any other topping. Made for birthdays and gifts.",
+      "photos": [
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/96d2882f4fa5a00f9246ebf41e7b5e0bfde66d61.jpeg",
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/f07a7c2ee4dd8c37fccddc151e1402db166b44dc.jpeg",
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/abed5d27489f336f1cd6db5c0e028f675c0167d1.jpeg",
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/270fec98806847b378592b984ab10ff2ddf95bae.jpeg"
+      ],
+      "sizes": [
+        {
+          "key": "7in",
+          "label": "7-inch",
+          "url": "https://pastryuniverse.bumpa.shop/products/birthday-banana-cake/4878690",
+          "productId": 4878690,
+          "choices": [],
+          "priceMin": 21750,
+          "priceMax": 21750,
+          "inStock": true
+        },
+        {
+          "key": "8in",
+          "label": "8-inch",
+          "url": "https://pastryuniverse.bumpa.shop/products/birthday-banana-cake-8-inches/5556376",
+          "productId": 5556376,
+          "choices": [],
+          "priceMin": 18750,
+          "priceMax": 18750,
+          "inStock": true
+        },
+        {
+          "key": "12in",
+          "label": "12-inch square",
+          "url": "https://pastryuniverse.bumpa.shop/products/birthday-banana-cake/4878690",
+          "productId": 4878690,
+          "choices": [],
+          "priceMin": 48500,
+          "priceMax": 48500,
+          "inStock": true
+        },
+        {
+          "key": "double",
+          "label": "Double layer",
+          "url": "https://pastryuniverse.bumpa.shop/products/birthday-banana-cake/4878690",
+          "productId": 4878690,
+          "choices": [],
+          "priceMin": 48500,
+          "priceMax": 48500,
+          "inStock": true
+        }
+      ],
+      "priceMin": 18750,
+      "inStock": true
+    },
+    {
+      "id": "oats",
+      "name": "Oats Banana Bread",
+      "category": "Banana bread",
+      "tag": "Fitfam",
+      "description": "Made with oats and other natural ingredients, for anyone on a fitfam journey.",
+      "photos": [
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/f5ace24bf3a7e491375e31f8a194f9eb27e0ae2e.jpeg",
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/a5e31228812583c1d2d3afb453bacf6e09f614c2.jpeg",
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/0c34a9ec218736a464498e801d578b33c3ced3b9.jpeg",
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/32092ef771872942efa8463c251e161974628df9.jpeg"
+      ],
+      "sizes": [
+        {
+          "key": "mini",
+          "label": "Mini",
+          "url": "https://pastryuniverse.bumpa.shop/products/oats-banana-bread-mini/2655846",
+          "productId": 2655846,
+          "choices": [
+            {
+              "label": "No toppings",
+              "price": 2500,
+              "inStock": true
+            },
+            {
+              "label": "Raisins",
+              "price": 2800,
+              "inStock": true
+            },
+            {
+              "label": "Sesame seeds",
+              "price": 2800,
+              "inStock": true
+            },
+            {
+              "label": "Coconut chips",
+              "price": 2800,
+              "inStock": true
+            },
+            {
+              "label": "Almond nuts",
+              "price": 2800,
+              "inStock": true
+            },
+            {
+              "label": "Chocolate chips",
+              "price": 2800,
+              "inStock": true
+            }
+          ],
+          "priceMin": 2500,
+          "priceMax": 2800,
+          "inStock": true
+        },
+        {
+          "key": "medium",
+          "label": "Medium",
+          "url": "https://pastryuniverse.bumpa.shop/products/oats-banana-bread-medium/2671284",
+          "productId": 2671284,
+          "choices": [
+            {
+              "label": "No toppings",
+              "price": 4000,
+              "inStock": true
+            },
+            {
+              "label": "Almond nuts and coconut chips",
+              "price": 4500,
+              "inStock": true
+            },
+            {
+              "label": "Coconut chips and raisins",
+              "price": 4500,
+              "inStock": true
+            },
+            {
+              "label": "Almond nuts and raisins",
+              "price": 4500,
+              "inStock": true
+            },
+            {
+              "label": "Chocolate chips",
+              "price": 4500,
+              "inStock": true
+            },
+            {
+              "label": "Sesame seeds and raisins",
+              "price": 4500,
+              "inStock": true
+            }
+          ],
+          "priceMin": 4000,
+          "priceMax": 4500,
+          "inStock": true
+        },
+        {
+          "key": "large",
+          "label": "Large",
+          "url": "https://pastryuniverse.bumpa.shop/products/oats-banana-bread-large/2531016",
+          "productId": 2531016,
+          "choices": [
+            {
+              "label": "No toppings",
+              "price": 6000,
+              "inStock": true
+            },
+            {
+              "label": "Coconut chips",
+              "price": 6700,
+              "inStock": true
+            },
+            {
+              "label": "Groundnuts",
+              "price": 6700,
+              "inStock": true
+            },
+            {
+              "label": "Almond nuts",
+              "price": 6700,
+              "inStock": true
+            },
+            {
+              "label": "Raisins",
+              "price": 6700,
+              "inStock": true
+            },
+            {
+              "label": "Chocolate chips",
+              "price": 6700,
+              "inStock": true
+            }
+          ],
+          "priceMin": 6000,
+          "priceMax": 6700,
+          "inStock": true
+        }
+      ],
+      "priceMin": 2500,
+      "inStock": true
+    },
+    {
+      "id": "petit-box",
+      "name": "Petit Loaf Box",
+      "category": "Gift boxes",
+      "tag": "Gift",
+      "description": "Six mini banana breads with different exotic toppings. Perfect for gifting friends and loved ones, with a handwritten note if you like.",
+      "photos": [
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/6d4e506e185996e8e7bdd1a80a2338a1d36647dc.jpeg",
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/b36408cb781e715c55dfa418f31823e5f60f04c1.jpeg"
+      ],
+      "sizes": [
+        {
+          "key": "regular",
+          "label": "Regular",
+          "url": "https://pastryuniverse.bumpa.shop/products/petit-loaf-box/4561339",
+          "productId": 4561339,
+          "choices": [
+            {
+              "label": "Handwritten note",
+              "price": 20100,
+              "inStock": true
+            },
+            {
+              "label": "No note",
+              "price": 18500,
+              "inStock": true
+            }
+          ],
+          "priceMin": 18500,
+          "priceMax": 20100,
+          "inStock": true
+        }
+      ],
+      "priceMin": 18500,
+      "inStock": true
+    },
+    {
+      "id": "chinchin",
+      "name": "Chin-Chin",
+      "category": "Chin-chin",
+      "tag": null,
+      "description": "Delicious, crunchy chin-chin, plain or peppered.",
+      "photos": [
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/48396936ac6d4506e2fb078d1668c2f2d8726031.jpeg",
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/ccc0b609161c6e163a1091fdd706d5fb3ca0a142.jpeg",
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/148a5685170e2be621c3da6785ddb0b9dbc6622f.jpeg",
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/51b38693f73c539d70152487d174c1f57c32b777.jpeg"
+      ],
+      "sizes": [
+        {
+          "key": "200g",
+          "label": "200g pouch",
+          "url": "https://pastryuniverse.bumpa.shop/products/chinchin-200g-pouch/2244050",
+          "productId": 2244050,
+          "choices": [
+            {
+              "label": "Plain",
+              "price": 2000,
+              "inStock": true
+            },
+            {
+              "label": "Peppered",
+              "price": 2200,
+              "inStock": true
+            }
+          ],
+          "priceMin": 2000,
+          "priceMax": 2200,
+          "inStock": true
+        },
+        {
+          "key": "400g",
+          "label": "400g pouch",
+          "url": "https://pastryuniverse.bumpa.shop/products/chinchin-400g-pouch/2204772",
+          "productId": 2204772,
+          "choices": [
+            {
+              "label": "Plain",
+              "price": 3200,
+              "inStock": true
+            },
+            {
+              "label": "Peppered",
+              "price": 3500,
+              "inStock": true
+            }
+          ],
+          "priceMin": 3200,
+          "priceMax": 3500,
+          "inStock": true
+        },
+        {
+          "key": "1kg",
+          "label": "1kg half bucket",
+          "url": "https://pastryuniverse.bumpa.shop/products/chinchin-half-paint-bucket-1kg/2204961",
+          "productId": 2204961,
+          "choices": [
+            {
+              "label": "Plain",
+              "price": 8500,
+              "inStock": true
+            },
+            {
+              "label": "Peppered",
+              "price": 8900,
+              "inStock": true
+            }
+          ],
+          "priceMin": 8500,
+          "priceMax": 8900,
+          "inStock": true
+        },
+        {
+          "key": "2kg",
+          "label": "2kg paint bucket",
+          "url": "https://pastryuniverse.bumpa.shop/products/chin-chin-paint-bucket2kg/2204409",
+          "productId": 2204409,
+          "choices": [
+            {
+              "label": "Plain",
+              "price": 18000,
+              "inStock": true
+            },
+            {
+              "label": "Peppered",
+              "price": 19000,
+              "inStock": true
+            }
+          ],
+          "priceMin": 18000,
+          "priceMax": 19000,
+          "inStock": true
+        }
+      ],
+      "priceMin": 2000,
+      "inStock": true
+    },
+    {
+      "id": "lemon",
+      "name": "Lemon Infused Banana Bread",
+      "category": "Banana bread",
+      "tag": null,
+      "description": "Banana bread infused with fresh lemon juice and lemon rind.",
+      "photos": [
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/a988bede03c1554559aef2f50b44e6f2ecd5efbf.jpeg",
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/d8fa324cb72b75b19c4993c8d3ae1c3069cdb021.jpeg",
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/7d40c2e057e86ac511b651ea76a833d3745eaebe.jpeg"
+      ],
+      "sizes": [
+        {
+          "key": "mini",
+          "label": "Mini",
+          "url": "https://pastryuniverse.bumpa.shop/products/mini-lemon-infused-banana-bread/3016921",
+          "productId": 3016921,
+          "choices": [
+            {
+              "label": "No toppings",
+              "price": 1900,
+              "inStock": true
+            },
+            {
+              "label": "Raisins",
+              "price": 2200,
+              "inStock": true
+            },
+            {
+              "label": "Banana toppings",
+              "price": 2200,
+              "inStock": true
+            },
+            {
+              "label": "Coconut chips",
+              "price": 2200,
+              "inStock": true
+            },
+            {
+              "label": "Chocolate chips",
+              "price": 2200,
+              "inStock": true
+            }
+          ],
+          "priceMin": 1900,
+          "priceMax": 2200,
+          "inStock": true
+        },
+        {
+          "key": "medium",
+          "label": "Medium",
+          "url": "https://pastryuniverse.bumpa.shop/products/lemon-infused-banana-bread-medium/3016961",
+          "productId": 3016961,
+          "choices": [
+            {
+              "label": "No toppings",
+              "price": 3000,
+              "inStock": true
+            },
+            {
+              "label": "Raisins",
+              "price": 3500,
+              "inStock": true
+            },
+            {
+              "label": "Banana toppings",
+              "price": 3500,
+              "inStock": true
+            },
+            {
+              "label": "Coconut chips",
+              "price": 3500,
+              "inStock": true
+            },
+            {
+              "label": "Chocolate chips",
+              "price": 3500,
+              "inStock": true
+            }
+          ],
+          "priceMin": 3000,
+          "priceMax": 3500,
+          "inStock": true
+        },
+        {
+          "key": "large",
+          "label": "Large",
+          "url": "https://pastryuniverse.bumpa.shop/products/lemon-infused-banana-bread-large/3016979",
+          "productId": 3016979,
+          "choices": [
+            {
+              "label": "No toppings",
+              "price": 5200,
+              "inStock": true
+            },
+            {
+              "label": "Raisins",
+              "price": 6000,
+              "inStock": true
+            },
+            {
+              "label": "Banana toppings",
+              "price": 6000,
+              "inStock": true
+            },
+            {
+              "label": "Coconut chips",
+              "price": 6000,
+              "inStock": true
+            },
+            {
+              "label": "Chocolate",
+              "price": 6000,
+              "inStock": true
+            }
+          ],
+          "priceMin": 5200,
+          "priceMax": 6000,
+          "inStock": true
+        }
+      ],
+      "priceMin": 1900,
+      "inStock": true
+    },
+    {
+      "id": "red-velvet",
+      "name": "Red Velvet Cake",
+      "category": "Cakes",
+      "tag": null,
+      "description": "Succulent, moist red dessert cake.",
+      "photos": [
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/0363d83bed227cc37212b3510195bdec4f92ac27.jpeg",
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/5a35b7f15840cbf1f209028cffdefe10cb41d3a0.jpeg",
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/cbc9e4617958ad86035b880a7be4c7484c6f5cd1.jpeg"
+      ],
+      "sizes": [
+        {
+          "key": "mini",
+          "label": "Mini",
+          "url": "https://pastryuniverse.bumpa.shop/products/red-velvet-cake/4449606",
+          "productId": 4449606,
+          "choices": [],
+          "priceMin": 2000,
+          "priceMax": 2000,
+          "inStock": true
+        },
+        {
+          "key": "medium",
+          "label": "Medium",
+          "url": "https://pastryuniverse.bumpa.shop/products/red-velvet-cake/4449606",
+          "productId": 4449606,
+          "choices": [],
+          "priceMin": 3000,
+          "priceMax": 3000,
+          "inStock": true
+        }
+      ],
+      "priceMin": 2000,
+      "inStock": true
+    },
+    {
+      "id": "cubed",
+      "name": "Cubed Chin-Chin",
+      "category": "Chin-chin",
+      "tag": null,
+      "description": "Cut into cubes. Delicious and crunchy, plain or peppered.",
+      "photos": [
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/1329e13bd8927c2dc6ea9ee8d16855b8bee7b4da.jpeg"
+      ],
+      "sizes": [
+        {
+          "key": "200g",
+          "label": "200g pouch",
+          "url": "https://pastryuniverse.bumpa.shop/products/cubed-chinchin/2377157",
+          "productId": 2377157,
+          "choices": [
+            {
+              "label": "Plain",
+              "price": 1700,
+              "inStock": true
+            },
+            {
+              "label": "Peppered",
+              "price": 2000,
+              "inStock": true
+            }
+          ],
+          "priceMin": 1700,
+          "priceMax": 2000,
+          "inStock": true
+        },
+        {
+          "key": "400g",
+          "label": "400g pouch",
+          "url": "https://pastryuniverse.bumpa.shop/products/cubed-chinchin/2377157",
+          "productId": 2377157,
+          "choices": [
+            {
+              "label": "Plain",
+              "price": 3500,
+              "inStock": true
+            },
+            {
+              "label": "Peppered",
+              "price": 3900,
+              "inStock": true
+            }
+          ],
+          "priceMin": 3500,
+          "priceMax": 3900,
+          "inStock": true
+        },
+        {
+          "key": "1kg",
+          "label": "1kg half bucket",
+          "url": "https://pastryuniverse.bumpa.shop/products/cubed-chinchin/2377157",
+          "productId": 2377157,
+          "choices": [
+            {
+              "label": "Plain",
+              "price": 8500,
+              "inStock": true
+            },
+            {
+              "label": "Peppered",
+              "price": 8900,
+              "inStock": true
+            }
+          ],
+          "priceMin": 8500,
+          "priceMax": 8900,
+          "inStock": true
+        },
+        {
+          "key": "2kg",
+          "label": "2kg paint bucket",
+          "url": "https://pastryuniverse.bumpa.shop/products/cubed-chinchin/2377157",
+          "productId": 2377157,
+          "choices": [
+            {
+              "label": "Plain",
+              "price": 16500,
+              "inStock": true
+            },
+            {
+              "label": "Peppered",
+              "price": 17500,
+              "inStock": true
+            }
+          ],
+          "priceMin": 16500,
+          "priceMax": 17500,
+          "inStock": true
+        }
+      ],
+      "priceMin": 1700,
+      "inStock": true
+    },
+    {
+      "id": "dates",
+      "name": "Dates Powder Bread",
+      "category": "Banana bread",
+      "tag": "No sugar",
+      "description": "Made with whole wheat flour and dates powder, with no sugar added.",
+      "photos": [
+        "https://dodptt9f4zk9h.cloudfront.net/stores/206739/products/39dc2bb5afe47ade69744c9e53ccdaef7299c974.jpeg"
+      ],
+      "sizes": [
+        {
+          "key": "regular",
+          "label": "Regular",
+          "url": "https://pastryuniverse.bumpa.shop/products/dates-powder-bread/3862336",
+          "productId": 3862336,
+          "choices": [
+            {
+              "label": "Coconut chips",
+              "price": 2050,
+              "inStock": true
+            },
+            {
+              "label": "Almond nuts",
+              "price": 2050,
+              "inStock": true
+            },
+            {
+              "label": "Chocolate chips",
+              "price": 2050,
+              "inStock": true
+            },
+            {
+              "label": "Raisins",
+              "price": 2050,
+              "inStock": true
+            }
+          ],
+          "priceMin": 2050,
+          "priceMax": 2050,
+          "inStock": true
+        }
+      ],
+      "priceMin": 2050,
+      "inStock": true
+    }
+  ],
+  "delivery": {
+    "pickup": "Pick up at No.10 Johnson Street, Kajola, Ojodu Berger. Please call 09017202788 to pick up.",
+    "zones": [
+      {
+        "name": "Ojodu / Omole Phase 1&2 / Magodo phase 1 / Olowora",
+        "areas": "Deliveries to Ojodu /Omole Phase 1&2 /Magodo phase 1 /Olowora",
+        "fee": 2000
+      },
+      {
+        "name": "Ikeja",
+        "areas": "",
+        "fee": 2500
+      },
+      {
+        "name": "Ogba / Magodo Shangisha",
+        "areas": "To Ogba and Magodo Shangisha",
+        "fee": 2500
+      },
+      {
+        "name": "Agege / Maryland / Ogudu",
+        "areas": "Deliveries to Ikeja, Agege, Maryland and Ogudu Axis",
+        "fee": 3000
+      },
+      {
+        "name": "Ikosi / Ketu / Alapere / Maryland / Oworo / Ilupeju",
+        "areas": "Deliveries Ikosi /Ketu /Alapere /Maryland /Oworo /Ilupeju",
+        "fee": 3000
+      },
+      {
+        "name": "Opic Estate",
+        "areas": "Deliveries to Opic Estate",
+        "fee": 3000
+      },
+      {
+        "name": "Iyana Ipaja / Egbeda",
+        "areas": "To Iyana-Ipaja and Egbeda",
+        "fee": 3500
+      },
+      {
+        "name": "Ojokoro / Command / Iju fagba / Abule egba",
+        "areas": "Deliveries to Ojokoro /Command /Iju fagba / Abule egba",
+        "fee": 3500
+      },
+      {
+        "name": "Akoka / Oyingbo / Costain / Iganmu",
+        "areas": "Deliveries to /Akoka /Oyingbo /Costain /Iganmu",
+        "fee": 4000
+      },
+      {
+        "name": "Bariga / Shomolu / Yaba / Oshodi / Mushin",
+        "areas": "Deliveries to Bariga /Shomolu /Yaba /Oshodi /Mushin",
+        "fee": 4000
+      },
+      {
+        "name": "Igando / Ikotun / Idimu / Ejigbo / Ipaja",
+        "areas": "To Igando, Ikotun, Ejigbo, Ipaja Axis",
+        "fee": 4000
+      },
+      {
+        "name": "Yaba / Surulere / Shomolu / Bariga",
+        "areas": "To Yaba, Surulere, Shomolu and Bariga",
+        "fee": 4000
+      },
+      {
+        "name": "Alakuko",
+        "areas": "Deliveries to Alakuko",
+        "fee": 4500
+      },
+      {
+        "name": "Ijegun / Ago palace",
+        "areas": "To Ijegun and Ago-palace axis",
+        "fee": 4500
+      },
+      {
+        "name": "Ikorodu",
+        "areas": "Deliveries to Ikorodu",
+        "fee": 4500
+      },
+      {
+        "name": "Apapa",
+        "areas": "Deliveries to Apapa Axis",
+        "fee": 5000
+      },
+      {
+        "name": "Festac town",
+        "areas": "Deliveries to Festac town Axis",
+        "fee": 5000
+      },
+      {
+        "name": "Festac Town / Ayobo",
+        "areas": "To Festac Town and Ayobo axis",
+        "fee": 5000
+      },
+      {
+        "name": "Lagos Island / VI",
+        "areas": "Deliveries to Lagos Island /VI",
+        "fee": 5000
+      },
+      {
+        "name": "Lekki phase 1",
+        "areas": "Deliveries to Lekki phase 1",
+        "fee": 5500
+      },
+      {
+        "name": "Chevron / Lekki phase 2",
+        "areas": "Deliveries to Chevron /Lekki phase 2",
+        "fee": 6000
+      },
+      {
+        "name": "Satelite town",
+        "areas": "Delivery to Satellite town",
+        "fee": 6000
+      },
+      {
+        "name": "Ajah / Ikota / Orchid Road / VGC",
+        "areas": "Deliveries to Ajah /Ikota /Orchid Road /VGC",
+        "fee": 7000
+      },
+      {
+        "name": "Sangotedo",
+        "areas": "Deliveries to Sangotedo",
+        "fee": 8000
+      },
+      {
+        "name": "Awoyaya",
+        "areas": "Deliveries to Awoyaya Axis",
+        "fee": 9000
+      },
+      {
+        "name": "Ibeju Lekki",
+        "areas": "Ibeju Lekki axis",
+        "fee": 12000
+      },
+      {
+        "name": "Epe",
+        "areas": "Deliveries to Epe axis",
+        "fee": 15000
+      }
+    ]
+  }
+}
