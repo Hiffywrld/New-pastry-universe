@@ -4,7 +4,7 @@
 
 import demoMenu from './demo-menu.json';
 
-const KEY = 'pu-demo-v3';
+const KEY = 'pu-demo-v4';
 const DAY = 86_400_000;
 const LAGOS_OFFSET = 60 * 60_000; // UTC+1, no daylight saving
 
@@ -60,6 +60,101 @@ function availableDates(settings) {
   return out;
 }
 
+function weekdayOf(iso) {
+  const d = new Date(iso + 'T12:00:00Z').getUTCDay();
+  return d === 0 ? 7 : d;
+}
+
+function capacity(db, date) {
+  const s = db.settings;
+  const live = db.orders.filter((o) => o.deliveryDate === date && o.status !== 'CANCELLED');
+  const custom = (db.calendar || {})[date];
+  const customLimit = custom && custom.maxOrders != null ? custom.maxOrders : null;
+  const limit = customLimit != null ? customLimit : s.dailyLimit > 0 ? s.dailyLimit : null;
+  const slotLimit = s.slotLimit > 0 ? s.slotLimit : null;
+  const full = limit != null && live.length >= limit;
+  const labels = [...s.timeSlots, ...new Set(live.map((o) => o.timeSlot).filter((t) => !s.timeSlots.includes(t)))];
+  const weekdayClosed = s.closedWeekdays.includes(weekdayOf(date));
+  const paid = live.filter((o) => o.paymentStatus === 'CONFIRMED');
+  return {
+    date, closed: weekdayClosed || Boolean(custom?.closed), weekdayClosed, note: custom?.note || null, limit, customLimit,
+    orders: live.length, paidOrders: paid.length, revenue: paid.reduce((t, o) => t + o.total, 0), full,
+    slots: labels.map((label) => {
+      const n = live.filter((o) => o.timeSlot === label).length;
+      return { label, orders: n, full: full || (slotLimit != null && n >= slotLimit) };
+    }),
+  };
+}
+
+function shopCalendar(db) {
+  const out = { availableDates: [], fullDates: [], fullSlots: {} };
+  for (const d of availableDates(db.settings)) {
+    const c = capacity(db, d);
+    if (c.closed) continue;
+    if (c.full || c.slots.every((x) => x.full)) out.fullDates.push(d);
+    else {
+      out.availableDates.push(d);
+      const taken = c.slots.filter((x) => x.full).map((x) => x.label);
+      if (taken.length) out.fullSlots[d] = taken;
+    }
+  }
+  return out;
+}
+
+const PAID = ['CONFIRMED', 'BAKING', 'READY', 'OUT_FOR_DELIVERY', 'COMPLETED'];
+const BAKED = ['READY', 'OUT_FOR_DELIVERY', 'COMPLETED'];
+
+function bySlot(db) {
+  const slots = db.settings.timeSlots;
+  const idx = (o) => (slots.indexOf(o.timeSlot) < 0 ? slots.length : slots.indexOf(o.timeSlot));
+  return (a, b) => idx(a) - idx(b) || a.createdAt - b.createdAt;
+}
+
+function totals(orders) {
+  const map = new Map();
+  orders.forEach((o) => o.items.forEach((i) => {
+    const key = [i.slug, i.size, i.option].join('|');
+    const cur = map.get(key) || { slug: i.slug, product: i.name, size: i.size, option: i.option, quantity: 0, baked: 0, orders: 0 };
+    cur.quantity += i.quantity;
+    if (BAKED.includes(o.status)) cur.baked += i.quantity;
+    cur.orders += 1;
+    map.set(key, cur);
+  }));
+  return [...map.values()].sort((a, b) => a.product.localeCompare(b.product) || a.size.localeCompare(b.size) || a.option.localeCompare(b.option));
+}
+
+function riderStop(o, rider) {
+  const gift = Boolean(o.gift);
+  const phone = gift && o.gift.recipientPhone ? o.gift.recipientPhone : o.customerPhone;
+  return {
+    id: o.id, code: o.code, timeSlot: o.timeSlot, status: o.status, statusLabel: label(o.status, o.fulfilment),
+    zone: o.zoneName, address: o.address, landmark: o.landmark, name: gift ? o.gift.recipientName : o.customerName,
+    phone, phoneDisplay: displayPhone(phone), gift, from: gift ? o.customerName : null, giftNote: gift ? o.gift.note : null,
+    notes: o.notes, items: toSummary(o).itemsText.split(', '), itemCount: o.items.reduce((t, i) => t + i.quantity, 0),
+    mine: o.riderId === rider.id,
+  };
+}
+
+function customerRows(db) {
+  const rows = [];
+  for (const [phone, c] of Object.entries(db.customers || {})) {
+    const list = db.orders.filter((o) => o.customerPhone === phone);
+    const live = list.filter((o) => o.status !== 'CANCELLED');
+    const counts = {};
+    live.forEach((o) => o.items.forEach((i) => { counts[i.name] = (counts[i.name] || 0) + i.quantity; }));
+    const fav = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+    rows.push({
+      id: c.id, name: c.name, phone: displayPhone(phone), email: c.email, avatarUrl: null,
+      orders: live.length, spent: live.filter((o) => o.paymentStatus === 'CONFIRMED').reduce((t, o) => t + o.total, 0),
+      firstOrder: live.length ? new Date(Math.min(...live.map((o) => o.createdAt))).toISOString() : null,
+      lastOrder: live.length ? new Date(Math.max(...live.map((o) => o.createdAt))).toISOString() : null,
+      favourite: fav ? fav[0] : null, tags: c.tags || [], hasNotes: Boolean(c.notes), signedIn: list.some((o) => o.accountId),
+      noOrdersYet: list.length === 0, _phone: phone, _counts: counts,
+    });
+  }
+  return rows;
+}
+
 const LABELS = {
   AWAITING_PAYMENT: 'Order placed',
   PAYMENT_REVIEW: 'Checking payment',
@@ -85,8 +180,12 @@ const RECEIPT_SVG =
 // Sample data -------------------------------------------------------------
 
 const NAMES = ['Ada Obi', 'Tolu Adeyemi', 'Chidi Okeke', 'Funmi Bello', 'Kemi Lawal', 'Ifeanyi Eze', 'Bisi Ogun', 'Zainab Musa', 'Seun Ajayi', 'Ngozi Nwosu', 'Tunde Bakare', 'Amaka Uche', 'Yemi Alade', 'Dayo Fashola'];
+const phoneFor = (name) => '080' + String(31000000 + NAMES.indexOf(name) * 1234567).slice(0, 8);
+const ADDRESSES = ['14 Admiralty Way, Lekki Phase 1', '3 Opebi Road, Ikeja', '22 Herbert Macaulay Way, Yaba', '7 Awolowo Road, Ikoyi', '41 Isaac John Street, GRA Ikeja', '9 Fola Osibo Road, Lekki', '18 Bode Thomas Street, Surulere'];
+const LANDMARKS = ['Opposite the filling station', 'Blue gate, next to the pharmacy', 'Behind the church', null, null];
 
 function seed() {
+  const now = Date.now();
   const settings = {
     bankName: 'Moniepoint MFB',
     accountName: 'Pastry Universe (demo)',
@@ -106,9 +205,15 @@ function seed() {
     announcement: '',
     shopOpen: true,
     game: { enabled: true, percentByOrders: [5, 10, 15, 25], perfectPercent: 40, perfectMinTimeLeft: 8, maxDiscount: 5000, validDays: 14 },
+    dailyLimit: 14,
+    slotLimit: null,
   };
-  const db = { settings, orders: [], events: [], nextId: 1, account: null, reward: null, played: false, signupsToday: 3, gamesToday: 5 };
-  const now = Date.now();
+  const db = {
+    settings, orders: [], events: [], nextId: 1, account: null, reward: null, played: false, signupsToday: 3, gamesToday: 5,
+    customers: {}, nextCustomerId: 1, calendar: {},
+    riders: [{ id: 1, name: 'Tunde', phone: '+2348055555555', token: 'demo-rider-tunde', createdAt: now - 20 * DAY, lastSeenAt: now - 3_600_000 }],
+    nextRiderId: 2,
+  };
   const popular = [...VARIANTS.keys()];
   for (let i = 0; i < 46; i++) {
     const daysAgo = i < 9 ? 0 : 1 + rand(13);
@@ -124,10 +229,11 @@ function seed() {
     if (daysAgo > 0 && Math.random() < 0.06) status = 'CANCELLED';
     const o = buildOrder(db, {
       items: lines,
-      customer: { name: pick(NAMES), phone: '080' + String(10000000 + rand(89999999)) },
+      customer: (() => { const n = pick(NAMES); return { name: n, phone: phoneFor(n) }; })(),
       fulfilment: delivery ? 'DELIVERY' : 'PICKUP',
       zoneId: zone.id,
-      address: '14 Sample Close, Lagos',
+      address: pick(ADDRESSES),
+      landmark: pick(LANDMARKS),
       deliveryDate: lagosDate(created + DAY),
       timeSlot: pick(settings.timeSlots),
     }, created);
@@ -144,6 +250,40 @@ function seed() {
     o.status = status;
     o.updatedAt = o.events[o.events.length - 1].at;
   }
+  const upcoming = [
+    [0, 'READY'], [0, 'READY'], [0, 'OUT_FOR_DELIVERY'], [0, 'BAKING'], [0, 'COMPLETED'],
+    [1, 'CONFIRMED'], [1, 'CONFIRMED'], [1, 'CONFIRMED'], [1, 'AWAITING_PAYMENT'],
+    [2, 'CONFIRMED'], [2, 'CONFIRMED'], [2, 'PAYMENT_REVIEW'], [3, 'CONFIRMED'], [3, 'CONFIRMED'], [4, 'CONFIRMED'], [5, 'AWAITING_PAYMENT'],
+  ];
+  upcoming.forEach(([ahead, status], k) => {
+    const created = now - (ahead === 0 ? DAY + rand(8) * 3_600_000 : rand(20) * 3_600_000);
+    const n = NAMES[(k * 5) % NAMES.length];
+    const delivery = k % 4 !== 3;
+    const o = buildOrder(db, {
+      items: Array.from({ length: 1 + rand(2) }, () => ({ variantId: pick(popular.slice(0, 30)), quantity: 1 + rand(3) })),
+      customer: { name: n, phone: phoneFor(n) },
+      fulfilment: delivery ? 'DELIVERY' : 'PICKUP',
+      zoneId: pick(demoMenu.delivery.zones.slice(0, 12)).id,
+      address: ADDRESSES[k % ADDRESSES.length],
+      landmark: LANDMARKS[k % LANDMARKS.length],
+      deliveryDate: lagosDate(now + ahead * DAY),
+      timeSlot: settings.timeSlots[k % settings.timeSlots.length],
+      gift: k === 6 ? { recipientName: 'Mummy Bisi', recipientPhone: '0802 444 1234', note: 'Happy birthday Mum! Love, Funmi' } : undefined,
+    }, created);
+    const paid = !['AWAITING_PAYMENT', 'PAYMENT_REVIEW'].includes(status);
+    if (status !== 'AWAITING_PAYMENT') o.receipts.push({ id: o.id * 10, url: RECEIPT_SVG, contentType: 'image/svg+xml', createdAt: created + 600_000 });
+    if (paid) {
+      o.paymentStatus = 'CONFIRMED';
+      o.paidAt = created + 1_800_000;
+    } else if (status === 'PAYMENT_REVIEW') o.paymentStatus = 'RECEIPT_UPLOADED';
+    const path = ['PAYMENT_REVIEW', 'CONFIRMED', 'BAKING', 'READY', ...(delivery ? ['OUT_FOR_DELIVERY'] : []), 'COMPLETED'];
+    path.slice(0, path.indexOf(status) + 1).forEach((st, j) => o.events.push({ status: st, note: null, actor: j === 0 ? 'Customer' : 'Pastry Universe', at: created + (j + 1) * 1_200_000 }));
+    o.status = status;
+    o.updatedAt = o.events[o.events.length - 1].at;
+  });
+  db.customers[normalizePhone(phoneFor('Ada Obi'))].notes = 'Orders for her office most Fridays. Likes extra raisins.';
+  db.customers[normalizePhone(phoneFor('Ada Obi'))].tags = ['Regular', 'Office'];
+  db.customers[normalizePhone(phoneFor('Kemi Lawal'))].tags = ['Birthday cakes'];
   // Some anonymous browsing for the funnel.
   for (let i = 0; i < 64; i++) db.events.push({ session: 's' + i, type: 'page_view', at: now - rand(8) * 3_600_000 });
   for (let i = 0; i < 41; i++) db.events.push({ session: 's' + i, type: 'product_view', at: now - rand(8) * 3_600_000 });
@@ -187,6 +327,11 @@ function buildOrder(db, req, createdAt = Date.now()) {
   const name = (req.customer?.name || '').trim();
   if (!name) throw new MockError('Enter your name.');
   const phone = normalizePhone(req.customer?.phone);
+  db.customers = db.customers || {};
+  if (!db.customers[phone]) {
+    db.nextCustomerId = db.nextCustomerId || 1;
+    db.customers[phone] = { id: db.nextCustomerId++, name, email: req.customer?.email || null, notes: null, tags: [], createdAt };
+  } else db.customers[phone].name = name;
   let zone = null;
   if (req.fulfilment === 'DELIVERY') {
     zone = demoMenu.delivery.zones.find((z) => z.id === Number(req.zoneId));
@@ -206,6 +351,7 @@ function buildOrder(db, req, createdAt = Date.now()) {
     gift, notes: req.notes || null, items, subtotal, deliveryFee: fee, total: subtotal + fee,
     receipts: [], events: [{ status: 'AWAITING_PAYMENT', note: null, actor: 'Customer', at: createdAt }],
     createdAt, updatedAt: createdAt, paidAt: null, rejectedReason: null, discount: 0, rewardCode: null, accountId: null,
+    customerId: db.customers[phone].id, riderId: null,
   };
   if (req.useReward) {
     const r = db.reward;
@@ -309,7 +455,7 @@ function startDemoPulse() {
         items: [{ variantId: v, quantity: 1 + rand(2) }],
         customer: { name: pick(NAMES), phone: '081' + String(10000000 + rand(89999999)) },
         fulfilment: 'DELIVERY', zoneId: zone.id, address: '3 Demo Street, Lagos',
-        deliveryDate: availableDates(db.settings)[0], timeSlot: db.settings.timeSlots[0],
+        deliveryDate: shopCalendar(db).availableDates[0] || availableDates(db.settings)[0], timeSlot: db.settings.timeSlots[0],
       });
       save();
       publish(o, 'created');
@@ -325,12 +471,18 @@ export const api = {
   menu: async () => {
     await wait(150);
     const s = load().settings;
-    return { ...demoMenu, store: { ...demoMenu.store, ticker: s.ticker, announcement: s.announcement, shopOpen: s.shopOpen, timeSlots: s.timeSlots, availableDates: availableDates(s) } };
+    return { ...demoMenu, store: { ...demoMenu.store, ticker: s.ticker, announcement: s.announcement, shopOpen: s.shopOpen, timeSlots: s.timeSlots, ...shopCalendar(load()) } };
   },
   createOrder: async (req) => {
     await wait(500);
     const db = load();
     if (!db.settings.shopOpen) throw new MockError("The shop isn't taking orders right now. Please check back soon.", 409);
+    if (!availableDates(db.settings).includes(req.deliveryDate)) throw new MockError("That date isn't available. Pick another day.");
+    if (!db.settings.timeSlots.includes(req.timeSlot)) throw new MockError('Pick one of the available times.');
+    const cap = capacity(db, req.deliveryDate);
+    if (cap.closed) throw new MockError("We're closed that day. Pick another day.", 409);
+    if (cap.full) throw new MockError('That day is fully booked. Pick another day.', 409);
+    if (cap.slots.some((x) => x.label === req.timeSlot && x.full)) throw new MockError('That time is fully booked. Pick another time or day.', 409);
     const o = buildOrder(db, { ...req, accountId: db.account ? db.account.id : null });
     save();
     publish(o, 'created');
@@ -565,6 +717,119 @@ export const api = {
       save();
       return { ...s };
     },
+    calendar: async (from, to) => {
+      await wait(150);
+      const db = load();
+      const today = lagosDate();
+      const start = from || lagosDate(Date.now() - 3 * DAY);
+      const end = to || lagosDate(Date.parse(start + 'T12:00:00Z') + 30 * DAY);
+      const days = [];
+      for (let t = Date.parse(start + 'T12:00:00Z'); lagosDate(t - LAGOS_OFFSET) <= end; t += DAY) days.push(capacity(db, new Date(t).toISOString().slice(0, 10)));
+      const s = db.settings;
+      return { today, dailyLimit: s.dailyLimit > 0 ? s.dailyLimit : null, slotLimit: s.slotLimit > 0 ? s.slotLimit : null, timeSlots: s.timeSlots, days };
+    },
+    setDay: async (date, { closed, maxOrders, note }) => {
+      await wait(200);
+      const db = load();
+      if (date < lagosDate()) throw new MockError('That day has passed.');
+      if (maxOrders != null && maxOrders < 0) throw new MockError("The limit can't be below zero.");
+      const entry = { closed: Boolean(closed), maxOrders: maxOrders ?? null, note: note?.trim() || null };
+      db.calendar = db.calendar || {};
+      if (!entry.closed && entry.maxOrders == null && !entry.note) delete db.calendar[date];
+      else db.calendar[date] = entry;
+      save();
+      return capacity(db, date);
+    },
+    setLimits: async ({ dailyLimit, slotLimit }) => {
+      await wait(200);
+      const db = load();
+      db.settings.dailyLimit = dailyLimit;
+      db.settings.slotLimit = slotLimit;
+      save();
+      return api.admin.calendar();
+    },
+    day: async (date) => {
+      await wait(180);
+      const db = load();
+      const d = date || lagosDate();
+      const list = db.orders.filter((o) => o.deliveryDate === d && o.status !== 'CANCELLED').sort(bySlot(db));
+      return {
+        date: d, capacity: capacity(db, d),
+        toBake: totals(list.filter((o) => PAID.includes(o.status))),
+        unpaid: totals(list.filter((o) => ['AWAITING_PAYMENT', 'PAYMENT_REVIEW'].includes(o.status))),
+        orders: list.map(toDetail),
+      };
+    },
+    bulkStatus: async (ids, status) => {
+      await wait(250);
+      const out = [];
+      for (const id of [...new Set(ids)]) out.push((await api.admin.setStatus(id, status)).summary);
+      return out;
+    },
+    riders: async () => {
+      await wait(100);
+      return (load().riders || []).filter((r) => r.active !== false).map((r) => ({ ...r, phone: displayPhone(r.phone), createdAt: new Date(r.createdAt).toISOString(), lastSeenAt: r.lastSeenAt ? new Date(r.lastSeenAt).toISOString() : null }));
+    },
+    addRider: async ({ name, phone }) => {
+      await wait(200);
+      if (!name?.trim()) throw new MockError("Enter the rider's name.");
+      const db = load();
+      const r = { id: db.nextRiderId++, name: name.trim(), phone: phone ? normalizePhone(phone) : null, token: 'demo-' + token(), createdAt: Date.now(), lastSeenAt: null, active: true };
+      db.riders.push(r);
+      save();
+      return { ...r, phone: displayPhone(r.phone), createdAt: new Date(r.createdAt).toISOString() };
+    },
+    removeRider: async (id) => {
+      await wait(150);
+      const r = load().riders.find((x) => x.id === Number(id));
+      if (r) r.active = false;
+      save();
+      return null;
+    },
+    customers: async (q = '', sort = 'recent') => {
+      await wait(150);
+      const db = load();
+      const term = q.trim().toLowerCase();
+      let digits = q.replace(/\D/g, '');
+      if (digits.startsWith('0')) digits = '234' + digits.slice(1);
+      const rows = customerRows(db).filter((r) => !term || r.name.toLowerCase().includes(term) || (r.email || '').toLowerCase().includes(term) || (digits.length >= 3 && r._phone.replace(/\D/g, '').includes(digits)));
+      const cmp = {
+        recent: (a, b) => (b.lastOrder || '').localeCompare(a.lastOrder || ''),
+        spent: (a, b) => b.spent - a.spent || b.orders - a.orders,
+        orders: (a, b) => b.orders - a.orders || b.spent - a.spent,
+        name: (a, b) => a.name.localeCompare(b.name),
+      }[sort] || ((a, b) => 0);
+      return rows.sort(cmp).map(({ _phone, _counts, ...r }) => r);
+    },
+    customer: async (id) => {
+      await wait(150);
+      const db = load();
+      const row = customerRows(db).find((r) => r.id === Number(id));
+      if (!row) throw new MockError('Customer not found.', 404);
+      const c = db.customers[row._phone];
+      const list = db.orders.filter((o) => o.customerPhone === row._phone).sort((a, b) => b.createdAt - a.createdAt);
+      const paidCount = list.filter((o) => o.status !== 'CANCELLED' && o.paymentStatus === 'CONFIRMED').length;
+      const { _phone, _counts, ...clean } = row;
+      return {
+        row: clean, notes: c.notes, joinedAt: new Date(c.createdAt).toISOString(), averageOrder: paidCount ? Math.round(row.spent / paidCount) : 0,
+        favourites: Object.entries(_counts).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([product, quantity]) => ({ product, quantity })),
+        orders: list.map(toSummary),
+      };
+    },
+    saveCustomer: async (id, { notes, tags }) => {
+      await wait(200);
+      const db = load();
+      const entry = Object.values(db.customers).find((c) => c.id === Number(id));
+      if (!entry) throw new MockError('Customer not found.', 404);
+      const seen = new Set();
+      const clean = (tags || []).map((t) => t.trim().replace(/\s+/g, ' ')).filter((t) => t && !seen.has(t.toLowerCase()) && seen.add(t.toLowerCase()));
+      if (clean.some((t) => t.length > 24)) throw new MockError('Keep each tag under 24 characters.');
+      if (clean.length > 8) throw new MockError('Use up to 8 tags.');
+      entry.notes = notes?.trim() || null;
+      entry.tags = clean;
+      save();
+      return api.admin.customer(id);
+    },
     stream: (handlers) => {
       adminListeners.add(handlers);
       startDemoPulse();
@@ -573,6 +838,38 @@ export const api = {
         handlers.hello?.({ visitors });
       }, 50);
       return () => adminListeners.delete(handlers);
+    },
+  },
+
+  rider: {
+    day: async (t, date) => {
+      await wait(200);
+      const db = load();
+      const rider = (db.riders || []).find((r) => r.token === t && r.active !== false);
+      if (!rider) throw new MockError("This rider link isn't active. Ask the kitchen for a new one.", 404);
+      rider.lastSeenAt = Date.now();
+      save();
+      const d = date || lagosDate();
+      const stops = db.orders
+        .filter((o) => o.deliveryDate === d && o.fulfilment === 'DELIVERY' && PAID.includes(o.status))
+        .sort(bySlot(db))
+        .map((o) => riderStop(o, rider));
+      return { rider: rider.name, date: d, today: lagosDate(), kitchenPhone: db.settings.phone, stops };
+    },
+    update: async (t, id, status) => {
+      await wait(250);
+      const db = load();
+      const rider = (db.riders || []).find((r) => r.token === t && r.active !== false);
+      if (!rider) throw new MockError("This rider link isn't active. Ask the kitchen for a new one.", 404);
+      const o = byId(id);
+      if (!['OUT_FOR_DELIVERY', 'COMPLETED'].includes(status)) throw new MockError('Riders can only mark orders as picked up or delivered.');
+      if (o.status === 'CANCELLED') throw new MockError('This order was cancelled. Call the kitchen.', 409);
+      if (o.paymentStatus !== 'CONFIRMED') throw new MockError("This order isn't paid yet. Call the kitchen before you take it.", 409);
+      o.riderId = rider.id;
+      if (o.status !== status) move(o, status, null, `Rider: ${rider.name}`);
+      save();
+      publish(o, 'status');
+      return riderStop(o, rider);
     },
   },
 };

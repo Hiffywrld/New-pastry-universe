@@ -5,6 +5,12 @@ The online shop and kitchen dashboard for Pastry Universe: premium banana bread,
 - **Shop:** treats sit in a glass display case. Tap a treat on the menu and it opens full screen in its own colour (the Treat Spotlight): pick a size and topping, swipe to the next treat, and close to send it back to its card. Every treat has its own link, e.g. `/?treat=banana-bread`, to share on WhatsApp or Instagram. Checkout handles delivery (fee by area) or free pickup, a delivery date and time, and gift notes. Customers pay by bank transfer, upload their receipt, and follow their order live.
 - **Kitchen (admin):** a live dashboard (sales, orders, visitors on the site right now, revenue trend, best sellers, top areas, shopper funnel), an orders board you drag from "To bake" to "Delivered", a payments list for checking receipts, and settings for bank details, opening days, time slots and the shop front.
 
+- **Running the kitchen:**
+  - **Plan:** a strip of the coming days showing how full each one is. Pick a day to see what to bake (added up from paid orders, with what's already done), that day's orders by delivery time, and a "Start baking all" button. Close a day (holidays) or give it its own limit.
+  - **Delivery calendar:** the owner sets the most orders per day and per delivery time. Full days and times show as full at checkout, and the server refuses orders that don't fit, even if two people try for the last spot at once.
+  - **Rider links:** add a rider and send them a private link (no login). They see the day's paid deliveries with call, WhatsApp and map buttons, tap Picked up and Delivered, and the customer's page updates live.
+  - **Printing:** a bake sheet for the kitchen wall, box labels (8 per A4 sheet, each with a tracking QR code) and customer receipts sized for a receipt printer.
+  - **Customers:** everyone who has ordered, with orders, total spent, favourite treat and last order. Search, sort, tag (e.g. Office, Regular), keep notes for the team, and download the list as a CSV.
 - **Accounts and Topping Rush:** shoppers sign in with Google, then get one go at Topping Rush, a 45-second game where they top 3 banana bread orders. The result sets their welcome discount (5% up to 40%, with odds, caps and expiry set in the kitchen). The discount comes off their first order automatically, once per account and phone number.
 
 ## What's inside
@@ -41,7 +47,7 @@ Without Docker, start Postgres yourself, create a `pastry` database and user, th
 cd backend && ./gradlew test   # needs Postgres; uses the pastry_test database
 ```
 
-The tests place an order, upload a receipt, log in as staff, confirm the payment, move the order to baking and check the dashboard.
+The tests place an order, upload a receipt, log in as staff, confirm the payment, move the order to baking and check the dashboard. They also fill a day to its limit, close a day, add up a baking plan, run a rider through a delivery, and check the customer list.
 
 ## How it works
 
@@ -67,6 +73,16 @@ The tests place an order, upload a receipt, log in as staff, confirm the payment
 | `POST /api/admin/orders/{id}/payment/confirm` | Confirm a payment |
 | `POST /api/admin/orders/{id}/status` | Move an order along |
 | `GET/PUT /api/admin/settings` | Store settings |
+| `GET /api/admin/calendar` | How full each day is, with limits |
+| `PUT /api/admin/calendar/days/{date}` | Close a day or give it its own limit |
+| `PUT /api/admin/calendar/limits` | Most orders per day and per delivery time (owner) |
+| `GET /api/admin/day?date=` | Baking plan and orders for a day |
+| `POST /api/admin/orders/bulk-status` | Move several orders at once |
+| `GET/POST/DELETE /api/admin/riders` | Rider links |
+| `GET /api/admin/customers` | Customer list (search and sort) |
+| `GET/PUT /api/admin/customers/{id}` | One customer, with notes and tags |
+| `GET /api/rider/{token}?date=` | A rider's deliveries (no login) |
+| `POST /api/rider/{token}/orders/{id}` | Rider marks picked up or delivered |
 
 ## Going live
 

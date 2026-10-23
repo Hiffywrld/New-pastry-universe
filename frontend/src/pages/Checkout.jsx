@@ -58,7 +58,12 @@ export default function Checkout() {
   const [busy, setBusy] = useState(false);
 
   const dates = menu?.store?.availableDates || [];
+  const fullDates = menu?.store?.fullDates || [];
+  const fullSlots = menu?.store?.fullSlots || {};
   const slots = menu?.store?.timeSlots || [];
+  // Fully booked days still show, greyed out, so people can see why they're missing.
+  const shownDates = [...new Set([...dates, ...fullDates])].sort();
+  const takenSlots = fullSlots[form.deliveryDate] || [];
   const zones = menu?.delivery?.zones || [];
 
   useEffect(() => {
@@ -66,12 +71,13 @@ export default function Checkout() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    setForm((f) => ({
-      ...f,
-      deliveryDate: dates.includes(f.deliveryDate) ? f.deliveryDate : dates[0] || '',
-      timeSlot: slots.includes(f.timeSlot) ? f.timeSlot : slots[0] || '',
-    }));
-  }, [dates.join(), slots.join()]); // eslint-disable-line react-hooks/exhaustive-deps
+    setForm((f) => {
+      const deliveryDate = dates.includes(f.deliveryDate) ? f.deliveryDate : dates[0] || '';
+      const taken = fullSlots[deliveryDate] || [];
+      const open = slots.filter((x) => !taken.includes(x));
+      return { ...f, deliveryDate, timeSlot: open.includes(f.timeSlot) ? f.timeSlot : open[0] || '' };
+    });
+  }, [dates.join(), slots.join(), JSON.stringify(fullSlots), form.deliveryDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const set = (key) => (e) => {
     const value = e?.target ? (e.target.type === 'checkbox' ? e.target.checked : e.target.value) : e;
@@ -241,24 +247,30 @@ export default function Checkout() {
           <fieldset className="form-card">
             <legend>{form.fulfilment === 'DELIVERY' ? 'When should it arrive?' : 'When will you pick up?'}</legend>
             <div className="date-row" role="radiogroup" aria-label="Date" id="co-deliveryDate" tabIndex={-1}>
-              {dates.map((d, i) => {
+              {shownDates.map((d, i) => {
                 const l = dateLabel(d, i);
+                const full = !dates.includes(d);
                 return (
-                  <label key={l.key} className={`date-chip${form.deliveryDate === d ? ' is-on' : ''}`}>
-                    <input type="radio" name="date" value={d} checked={form.deliveryDate === d} onChange={set('deliveryDate')} />
+                  <label key={l.key} className={`date-chip${form.deliveryDate === d ? ' is-on' : ''}${full ? ' is-full' : ''}`}>
+                    <input type="radio" name="date" value={d} checked={form.deliveryDate === d} onChange={set('deliveryDate')} disabled={full} />
                     <span className="small">{l.top}</span>
                     <strong>{l.bottom}</strong>
+                    {full && <span className="date-full">Full</span>}
                   </label>
                 );
               })}
             </div>
             {err('deliveryDate')}
             <div className="chips slot-row" role="radiogroup" aria-label="Time" id="co-timeSlot" tabIndex={-1}>
-              {slots.map((s) => (
-                <button type="button" key={s} aria-pressed={form.timeSlot === s} onClick={() => set('timeSlot')(s)}>
-                  {s}
-                </button>
-              ))}
+              {slots.map((s) => {
+                const taken = takenSlots.includes(s);
+                return (
+                  <button type="button" key={s} aria-pressed={form.timeSlot === s} disabled={taken} onClick={() => set('timeSlot')(s)}>
+                    {s}
+                    {taken && <span className="chip-price">Full</span>}
+                  </button>
+                );
+              })}
             </div>
             {err('timeSlot')}
           </fieldset>

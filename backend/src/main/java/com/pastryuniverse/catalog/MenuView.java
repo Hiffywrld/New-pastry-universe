@@ -2,6 +2,7 @@ package com.pastryuniverse.catalog;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 /** Everything the shop front needs in one response. */
 public record MenuView(List<Item> items, Delivery delivery, Store store) {
@@ -34,5 +35,7 @@ public record MenuView(List<Item> items, Delivery delivery, Store store) {
             String announcement,
             boolean shopOpen,
             List<String> timeSlots,
-            List<LocalDate> availableDates) {}
+            List<LocalDate> availableDates,
+            List<LocalDate> fullDates,
+            Map<String, List<String>> fullSlots) {}
 }

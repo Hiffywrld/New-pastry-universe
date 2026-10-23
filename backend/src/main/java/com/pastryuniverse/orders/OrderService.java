@@ -9,6 +9,7 @@ import com.pastryuniverse.catalog.VariantRepository;
 import com.pastryuniverse.common.ApiException;
 import com.pastryuniverse.common.Ids;
 import com.pastryuniverse.common.Phones;
+import com.pastryuniverse.kitchen.CalendarService;
 import com.pastryuniverse.live.LiveHub;
 import com.pastryuniverse.settings.SettingsService;
 import com.pastryuniverse.settings.StoreSettings;
@@ -16,7 +17,6 @@ import com.pastryuniverse.storage.FileStorage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -44,11 +44,13 @@ public class OrderService {
     private final FileStorage storage;
     private final LiveHub live;
     private final RewardRepository rewards;
+    private final CalendarService calendar;
 
     public OrderService(OrderRepository orders, CustomerRepository customers, VariantRepository variants,
                         DeliveryZoneRepository zones, SettingsService settings, FileStorage storage, LiveHub live,
-                        RewardRepository rewards) {
+                        RewardRepository rewards, CalendarService calendar) {
         this.rewards = rewards;
+        this.calendar = calendar;
         this.orders = orders;
         this.customers = customers;
         this.variants = variants;
@@ -96,9 +98,7 @@ public class OrderService {
             order.setDelivery(Fulfilment.PICKUP, null, null, 0, null, null);
         }
 
-        List<LocalDate> dates = settings.availableDates(s);
-        if (!dates.contains(req.deliveryDate())) throw ApiException.badRequest("That date isn't available. Pick another day.");
-        if (!s.timeSlotsOrDefault().contains(req.timeSlot())) throw ApiException.badRequest("Pick one of the available times.");
+        calendar.checkBookable(s, req.deliveryDate(), req.timeSlot());
         order.setSchedule(req.deliveryDate(), req.timeSlot());
 
         if (req.gift() != null && blankToNull(req.gift().recipientName()) != null) {
@@ -233,6 +233,28 @@ public class OrderService {
         order.moveTo(OrderStatus.AWAITING_PAYMENT, note, actor);
         publish(order, "payment");
         return OrderViews.toDetail(order);
+    }
+
+    /** A rider marking a delivery as picked up or delivered from their link. */
+    @Transactional
+    public OrderViews.Detail riderUpdate(long id, OrderStatus next, long riderId, String actor) {
+        Order order = byId(id);
+        if (order.getFulfilment() != Fulfilment.DELIVERY) throw ApiException.badRequest("This order is for pickup.");
+        if (next != OrderStatus.OUT_FOR_DELIVERY && next != OrderStatus.COMPLETED) throw ApiException.badRequest("Riders can only mark orders as picked up or delivered.");
+        if (order.getStatus() == OrderStatus.CANCELLED) throw ApiException.conflict("This order was cancelled. Call the kitchen.");
+        if (order.getPaymentStatus() != PaymentStatus.CONFIRMED) throw ApiException.conflict("This order isn't paid yet. Call the kitchen before you take it.");
+        order.setRiderId(riderId);
+        if (order.getStatus() != next) order.moveTo(next, null, actor);
+        publish(order, "status");
+        return OrderViews.toDetail(order);
+    }
+
+    /** Moves several orders at once, e.g. everything for tomorrow into the oven. */
+    @Transactional
+    public List<OrderViews.Summary> bulkStatus(List<Long> ids, OrderStatus next, String actor) {
+        if (ids == null || ids.isEmpty()) throw ApiException.badRequest("Pick at least one order.");
+        if (ids.size() > 200) throw ApiException.badRequest("That's too many orders at once.");
+        return ids.stream().distinct().map(id -> changeStatus(id, next, null, actor).summary()).toList();
     }
 
     @Transactional(readOnly = true)

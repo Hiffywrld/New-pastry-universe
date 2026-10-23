@@ -13,8 +13,19 @@ const icons = {
   dashboard: 'M4 13h6V4H4v9Zm0 7h6v-5H4v5Zm10 0h6v-9h-6v9Zm0-16v5h6V4h-6Z',
   orders: 'M4 5h16v4H4V5Zm0 6h7v8H4v-8Zm9 0h7v8h-7v-8Z',
   payments: 'M3 6h18v12H3V6Zm0 4h18M7 15h3',
+  plan: 'M4 6h16v14H4V6Zm0 4h16M8 3v5m8-5v5m-8 6h3m2 0h3m-8 3h3',
+  customers: 'M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm-6 9c.8-3.4 3.2-5.5 6-5.5s5.2 2.1 6 5.5m1-9a3 3 0 1 0-1.5-5.6M17 14.6c2 .5 3.4 2.4 4 5.4',
   settings: 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm7.4-3a7.4 7.4 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14.5 3h-4l-.4 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6a7.4 7.4 0 0 0 0 2.4l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2l.4 2.6h4l.4-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.1-.4.1-.8.1-1.2Z',
 };
+
+const NAV = [
+  { to: '/', icon: 'dashboard', label: 'Dashboard', short: 'Home' },
+  { to: '/orders', icon: 'orders', label: 'Orders' },
+  { to: '/plan', icon: 'plan', label: 'Plan' },
+  { to: '/customers', icon: 'customers', label: 'Customers' },
+  { to: '/payments', icon: 'payments', label: 'Payments' },
+  { to: '/settings', icon: 'settings', label: 'Settings' },
+];
 
 function Icon({ name }) {
   const filled = name === 'dashboard' || name === 'orders';
@@ -89,22 +100,13 @@ function Shell({ me }) {
               style={{ width: lens.w, height: lens.h, transform: `translate(${lens.x}px, ${lens.y}px)` }}
             />
           )}
-          <NavLink to="/" end>
-            <Icon name="dashboard" />
-            <span>Dashboard</span>
-          </NavLink>
-          <NavLink to="/orders">
-            <Icon name="orders" />
-            <span>Orders</span>
-          </NavLink>
-          <NavLink to="/payments">
-            <Icon name="payments" />
-            <span>Payments</span>
-          </NavLink>
-          <NavLink to="/settings">
-            <Icon name="settings" />
-            <span>Settings</span>
-          </NavLink>
+          {NAV.map((n) => (
+            <NavLink key={n.to} to={n.to} end={n.to === '/'}>
+              <Icon name={n.icon} />
+              <span className="nav-long">{n.label}</span>
+              <span className="nav-short">{n.short || n.label}</span>
+            </NavLink>
+          ))}
         </nav>
         <div className="admin-me">
           <p>{me?.name}</p>

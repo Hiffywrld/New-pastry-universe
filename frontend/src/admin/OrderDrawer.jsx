@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { api } from '../api/index.js';
 import { formatNaira } from '../lib/format.js';
 import { useOrderChanges } from './live.jsx';
@@ -252,6 +253,9 @@ export default function OrderDrawer({ id, onClose }) {
               >
                 {copied ? 'Link copied' : 'Copy customer tracking link'}
               </button>
+              <Link className="text-btn small" to={`/print/receipt/${s.id}`} onClick={onClose}>
+                Print receipt
+              </Link>
               {s.status !== 'CANCELLED' && s.status !== 'COMPLETED' && (
                 confirmCancel ? (
                   <span className="btn-row">

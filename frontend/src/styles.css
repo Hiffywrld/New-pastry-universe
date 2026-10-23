@@ -1631,6 +1631,21 @@ body::before {
   outline: 3px solid var(--orange);
   outline-offset: 2px;
 }
+.date-chip.is-full {
+  cursor: not-allowed;
+  border-style: dashed;
+  color: var(--muted);
+  background: var(--surface-2);
+}
+.date-full {
+  font: 600 11px/1 var(--font-display);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--coral);
+}
+.slot-row button:disabled {
+  text-decoration: none;
+}
 
 /* ---------- Order page ---------- */
 .order-top {

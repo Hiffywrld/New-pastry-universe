@@ -151,5 +151,31 @@ export const api = {
     settings: () => request('/api/admin/settings', { admin: true }),
     saveSettings: (s) => request('/api/admin/settings', { method: 'PUT', admin: true, body: s }),
     stream: (handlers) => stream(`/api/admin/stream?access_token=${encodeURIComponent(adminToken() || '')}`, handlers),
+
+    // Kitchen tools
+    calendar: (from, to) => request(`/api/admin/calendar${query({ from, to })}`, { admin: true }),
+    setDay: (date, body) => request(`/api/admin/calendar/days/${date}`, { method: 'PUT', admin: true, body }),
+    setLimits: (body) => request('/api/admin/calendar/limits', { method: 'PUT', admin: true, body }),
+    day: (date) => request(`/api/admin/day${query({ date })}`, { admin: true }),
+    bulkStatus: (ids, status) => request('/api/admin/orders/bulk-status', { method: 'POST', admin: true, body: { ids, status } }),
+    riders: () => request('/api/admin/riders', { admin: true }),
+    addRider: (body) => request('/api/admin/riders', { method: 'POST', admin: true, body }),
+    removeRider: (id) => request(`/api/admin/riders/${id}`, { method: 'DELETE', admin: true }),
+    customers: (q, sort) => request(`/api/admin/customers${query({ q, sort })}`, { admin: true }),
+    customer: (id) => request(`/api/admin/customers/${id}`, { admin: true }),
+    saveCustomer: (id, body) => request(`/api/admin/customers/${id}`, { method: 'PUT', admin: true, body }),
+  },
+
+  // The rider's page: no login, the secret link is the key.
+  rider: {
+    day: (token, date) => request(`/api/rider/${encodeURIComponent(token)}${query({ date })}`),
+    update: (token, id, status) => request(`/api/rider/${encodeURIComponent(token)}/orders/${id}`, { method: 'POST', body: { status } }),
   },
 };
+
+function query(params) {
+  const q = new URLSearchParams();
+  Object.entries(params).forEach(([k, v]) => v != null && v !== '' && q.set(k, v));
+  const s = q.toString();
+  return s ? `?${s}` : '';
+}

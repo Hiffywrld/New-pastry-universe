@@ -55,6 +55,7 @@ public class Order {
     private int discount;
     private String rewardCode;
     private Long accountId;
+    private Long riderId;
     private int total;
 
     @Enumerated(EnumType.STRING)
@@ -150,6 +151,9 @@ public class Order {
     }
 
     public void setAccountId(Long accountId) { this.accountId = accountId; }
+    public void setRiderId(Long riderId) { this.riderId = riderId; }
+    public Long getRiderId() { return riderId; }
+    public Customer getCustomer() { return customer; }
     public Long getAccountId() { return accountId; }
     public int getDiscount() { return discount; }
     public String getRewardCode() { return rewardCode; }

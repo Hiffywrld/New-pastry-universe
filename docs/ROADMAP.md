@@ -57,8 +57,10 @@ Automatic confirmation (e.g. Paystack dedicated virtual accounts) can come later
 ## Phases
 
 1. **Foundation:** monorepo, Spring Boot + Postgres, products seeded from the current menu, cart, checkout with bank transfer and receipt upload, order tracking, admin login, orders board, confirm payments, live dashboard.
-2. **Running the kitchen:** baking plan, products manager, delivery zones and settings, delivery calendar with limits, labels and receipts, rider page, customer CRM.
+2. **Running the kitchen:** baking plan ✅, delivery calendar with limits ✅, labels and receipts ✅, rider page ✅, customer CRM ✅. Still to do: products manager, delivery zones editor.
 3. **Customer magic:** accounts, Universe Points, referrals, box builder, cake builder, Send a Treat, gift cards, drops and waitlists, taste quiz, about, FAQ, reviews.
 4. **Launch:** installable app and push alerts, profit and ingredients, full analytics, polish, deploy, switch off Bumpa.
 
-Ongoing: cleaner product cut-outs.
+Done so far beyond phase 1: Google sign-in with the Topping Rush welcome game (part of phase 3), the Treat Spotlight, Liquid Glass and spring motion, cleaner cut-outs (second pass).
+
+Ongoing: better product photos. Re-shooting on a plain background would beat any cut-out tool.

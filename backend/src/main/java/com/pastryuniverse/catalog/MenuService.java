@@ -1,5 +1,6 @@
 package com.pastryuniverse.catalog;
 
+import com.pastryuniverse.kitchen.CalendarService;
 import com.pastryuniverse.settings.SettingsService;
 import com.pastryuniverse.settings.StoreSettings;
 import java.util.ArrayList;
@@ -15,11 +16,13 @@ public class MenuService {
     private final ProductRepository products;
     private final DeliveryZoneRepository zones;
     private final SettingsService settings;
+    private final CalendarService calendar;
 
-    public MenuService(ProductRepository products, DeliveryZoneRepository zones, SettingsService settings) {
+    public MenuService(ProductRepository products, DeliveryZoneRepository zones, SettingsService settings, CalendarService calendar) {
         this.products = products;
         this.zones = zones;
         this.settings = settings;
+        this.calendar = calendar;
     }
 
     @Transactional(readOnly = true)
@@ -30,10 +33,12 @@ public class MenuService {
                 .map(z -> new MenuView.Zone(z.getId(), z.getName(), z.getAreas(), z.getFee()))
                 .toList();
         MenuView.Delivery delivery = new MenuView.Delivery(s.pickupAddress(), s.pickupNote(), zoneViews);
+        CalendarService.ShopCalendar cal = calendar.forShop(s);
         MenuView.Store store = new MenuView.Store(
                 s.phone(), s.whatsapp(), s.email(), s.instagram(), s.address(),
                 s.ticker() == null ? List.of() : s.ticker(),
-                s.announcement(), s.acceptsOrders(), s.timeSlotsOrDefault(), settings.availableDates(s));
+                s.announcement(), s.acceptsOrders(), s.timeSlotsOrDefault(),
+                cal.availableDates(), cal.fullDates(), cal.fullSlots());
         return new MenuView(items, delivery, store);
     }
 

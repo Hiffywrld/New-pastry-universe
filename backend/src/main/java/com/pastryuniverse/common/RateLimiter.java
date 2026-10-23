@@ -26,6 +26,11 @@ public class RateLimiter {
         }
     }
 
+    /** Forget every window (used by tests). */
+    public void reset() {
+        windows.clear();
+    }
+
     @Scheduled(fixedRate = 300_000)
     void sweep() {
         long cutoff = System.currentTimeMillis() - Duration.ofMinutes(30).toMillis();

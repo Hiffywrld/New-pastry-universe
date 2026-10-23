@@ -24,7 +24,27 @@ public record StoreSettings(
         List<String> ticker,
         String announcement,
         Boolean shopOpen,
-        GameSettings game) {
+        GameSettings game,
+        Integer dailyLimit,
+        Integer slotLimit) {
+
+    /** Most orders the kitchen takes for one day (null or 0 means no limit). */
+    @JsonIgnore
+    public Integer dailyLimitOrNull() {
+        return dailyLimit == null || dailyLimit <= 0 ? null : dailyLimit;
+    }
+
+    /** Most orders for one delivery time on one day (null or 0 means no limit). */
+    @JsonIgnore
+    public Integer slotLimitOrNull() {
+        return slotLimit == null || slotLimit <= 0 ? null : slotLimit;
+    }
+
+    public StoreSettings withLimits(Integer daily, Integer slot) {
+        return new StoreSettings(bankName, accountName, accountNumber, phone, whatsapp, email, instagram, address,
+                pickupAddress, pickupNote, leadDays, maxDaysAhead, closedWeekdays, timeSlots, ticker, announcement,
+                shopOpen, game, daily, slot);
+    }
 
     @JsonIgnore
     public int leadDaysOrDefault() {

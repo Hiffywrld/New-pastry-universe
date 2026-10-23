@@ -32,13 +32,16 @@ class AccountFlowTest {
     @Autowired MockMvc mvc;
     @Autowired ObjectMapper json;
     @Autowired JdbcTemplate jdbc;
+    @Autowired com.pastryuniverse.common.RateLimiter limiter;
     @MockitoBean GoogleVerifier google;
 
     JsonNode menu;
 
     @BeforeEach
     void setUp() throws Exception {
-        jdbc.update("TRUNCATE orders, customers, analytics_events, rewards, game_sessions RESTART IDENTITY CASCADE");
+        limiter.reset();
+        jdbc.update("TRUNCATE orders, customers, analytics_events, rewards, game_sessions, calendar_days, riders RESTART IDENTITY CASCADE");
+        jdbc.update("UPDATE store_settings SET data = data - 'dailyLimit' - 'slotLimit'");
         when(google.isConfigured()).thenReturn(true);
         when(google.verify(anyString())).thenAnswer(inv -> {
             String token = inv.getArgument(0);

@@ -6,6 +6,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "customers")
@@ -21,6 +25,10 @@ public class Customer {
     private String googleSub;
     private String avatarUrl;
     private Instant lastLoginAt;
+    private String notes;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    private List<String> tags = new ArrayList<>();
     private Instant createdAt = Instant.now();
     private Instant updatedAt = Instant.now();
 
@@ -54,6 +62,17 @@ public class Customer {
         this.updatedAt = Instant.now();
     }
 
+    /** Staff notes and tags, from the kitchen's customer list. */
+    public void annotate(String notes, List<String> tags) {
+        this.notes = notes;
+        this.tags = tags == null ? new ArrayList<>() : new ArrayList<>(tags);
+        this.updatedAt = Instant.now();
+    }
+
+    public String getNotes() { return notes; }
+    public List<String> getTags() { return tags == null ? List.of() : tags; }
+    public Instant getCreatedAt() { return createdAt; }
+    public Instant getLastLoginAt() { return lastLoginAt; }
     public String getAvatarUrl() { return avatarUrl; }
     public String getGoogleSub() { return googleSub; }
     public Long getId() { return id; }
