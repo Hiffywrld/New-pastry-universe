@@ -36,6 +36,23 @@ const ART = {
   dates: { default: 'dates' },
 };
 
+// The colour each treat's spotlight blooms in. Light, warm tones that dark
+// text reads well on; dark mode mixes them down in styles.css.
+const COLORS = {
+  'banana-bread': '#f7cb4d',
+  birthday: '#f5adc0',
+  oats: '#e9d1a4',
+  'petit-box': '#a9dcc9',
+  chinchin: '#f5a845',
+  lemon: '#f1e384',
+  'red-velvet': '#ef8186',
+  cubed: '#cfbbea',
+  dates: '#d9a576',
+};
+const CATEGORY_COLORS = { 'Banana bread': '#f7cb4d', Cakes: '#f5adc0', 'Gift boxes': '#a9dcc9', 'Chin-chin': '#f5a845' };
+
+export const colorFor = (item) => COLORS[item.id] || CATEGORY_COLORS[item.category] || '#efd8b4';
+
 // The size shown first when someone opens an item.
 const DEFAULT_SIZE = { 'banana-bread': 'medium', birthday: '7in', chinchin: '400g', cubed: '400g' };
 

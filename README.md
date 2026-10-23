@@ -2,7 +2,7 @@
 
 The online shop and kitchen dashboard for Pastry Universe: premium banana bread, cakes and chin-chin in Lagos.
 
-- **Shop:** treats sit in a glass display case. Open one, pick a size and topping, and add it to the cart. Checkout handles delivery (fee by area) or free pickup, a delivery date and time, and gift notes. Customers pay by bank transfer, upload their receipt, and follow their order live.
+- **Shop:** treats sit in a glass display case. Tap a treat on the menu and it opens full screen in its own colour (the Treat Spotlight): pick a size and topping, swipe to the next treat, and close to send it back to its card. Every treat has its own link, e.g. `/?treat=banana-bread`, to share on WhatsApp or Instagram. Checkout handles delivery (fee by area) or free pickup, a delivery date and time, and gift notes. Customers pay by bank transfer, upload their receipt, and follow their order live.
 - **Kitchen (admin):** a live dashboard (sales, orders, visitors on the site right now, revenue trend, best sellers, top areas, shopper funnel), an orders board you drag from "To bake" to "Delivered", a payments list for checking receipts, and settings for bank details, opening days, time slots and the shop front.
 
 - **Accounts and Topping Rush:** shoppers sign in with Google, then get one go at Topping Rush, a 45-second game where they top 3 banana bread orders. The result sets their welcome discount (5% up to 40%, with odds, caps and expiry set in the kitchen). The discount comes off their first order automatically, once per account and phone number.

@@ -1,4 +1,4 @@
-// Small helpers shared by the display case and the product sheet.
+// Small helpers shared by the display case and the treat spotlight.
 
 export function choiceLegend(choices) {
   const labels = choices.map((c) => c.label.toLowerCase()).join(' ');

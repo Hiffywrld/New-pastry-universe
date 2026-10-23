@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import DisplayCase from '../components/DisplayCase.jsx';
-import ProductSheet from '../components/ProductSheet.jsx';
-import { canMorph, morph } from '../lib/motion.js';
+import Spotlight from '../components/Spotlight.jsx';
 import { Announcement, Delivery, GamePromo, Intro, MenuBoard, Ticker } from '../components/Sections.jsx';
 import { useMenu } from '../menu/useMenu.js';
 import { useCart } from '../state/cart.jsx';
@@ -12,19 +12,29 @@ export default function Shop() {
   const [active, setActive] = useState(0);
   const [open, setOpen] = useState(false);
   const [picks, setPicks] = useState({});
-  const [sheet, setSheet] = useState(null);
   const caseRef = useRef(null);
+  const [params, setParams] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const openSheet = (item, size) => {
-    const morphing = canMorph();
-    const apply = () => setSheet({ id: item.id, size, morphing });
-    if (morphing) morph(apply);
-    else apply();
+  const items = menu?.items || [];
+
+  // The spotlit treat comes from the address (?treat=…). While it closes, we
+  // keep showing it so it can fly back into its card.
+  const raw = params.get('treat');
+  const treatId = raw && items.some((i) => i.id === raw) ? raw : null;
+  const [spot, setSpot] = useState({ id: null, session: 0, last: null });
+  if (treatId !== spot.last) {
+    setSpot({ id: treatId || spot.id, session: treatId && !spot.last ? spot.session + 1 : spot.session, last: treatId });
+  }
+  const shownId = treatId || spot.id;
+
+  const openTreat = (item) => setParams({ treat: item.id }, { state: { spot: true } });
+  const closeTreat = () => {
+    if (location.state?.spot) navigate(-1);
+    else setParams({}, { replace: true });
   };
-  const closeSheet = (withMorph) => {
-    if (withMorph) morph(() => setSheet(null));
-    else setSheet(null);
-  };
+  const switchTreat = (id) => setParams({ treat: id }, { replace: true, state: location.state });
 
   if (error) {
     return (
@@ -38,10 +48,7 @@ export default function Shop() {
     );
   }
 
-  const items = menu?.items || [];
   const safeActive = Math.min(active, Math.max(0, items.length - 1));
-
-
 
   return (
     <>
@@ -66,15 +73,18 @@ export default function Shop() {
       )}
       <Ticker lines={menu?.store?.ticker} />
       <GamePromo />
-      {items.length > 0 && <MenuBoard items={items} openId={sheet?.id} onOpen={(item) => openSheet(item)} />}
+      {items.length > 0 && <MenuBoard items={items} liftedId={shownId} onOpen={openTreat} />}
       {menu && <Delivery delivery={menu.delivery} store={menu.store} />}
-      {sheet && items.find((i) => i.id === sheet.id) && (
-        <ProductSheet
-          key={sheet.id}
-          item={items.find((i) => i.id === sheet.id)}
-          initialSize={sheet.size}
-          morphing={sheet.morphing}
-          onClose={closeSheet}
+      {shownId && (
+        <Spotlight
+          key={spot.session}
+          items={items}
+          id={shownId}
+          closing={!treatId}
+          onSwitch={switchTreat}
+          onClose={closeTreat}
+          onClosed={() => setSpot((s) => ({ ...s, id: null }))}
+          onCheckout={() => navigate('/checkout', { replace: true })}
         />
       )}
     </>

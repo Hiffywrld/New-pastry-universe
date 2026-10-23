@@ -887,7 +887,7 @@
 
 /* Liquid Glass in the kitchen */
 .admin-top {
-  background: var(--glass-tint);
+  background: var(--glass-tint-strong);
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
   border-bottom-color: var(--glass-line);
@@ -902,8 +902,7 @@
   z-index: 0;
   border-radius: 12px;
   background: var(--orange);
-  background-image: linear-gradient(160deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 55%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 6px 18px -6px rgba(240, 163, 52, 0.7);
+  box-shadow: 0 6px 16px -8px rgba(240, 163, 52, 0.8);
   transition:
     transform 0.6s var(--spring-bouncy),
     width 0.6s var(--spring-smooth),
@@ -919,10 +918,10 @@
   background: transparent;
 }
 .toast {
-  background: rgba(20, 18, 18, 0.72);
+  background: rgba(24, 22, 22, 0.86);
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 16px 40px rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 16px 40px -12px rgba(0, 0, 0, 0.45);
   animation: toast-in 0.6s var(--spring-bouncy);
 }
 .kpi,
@@ -940,19 +939,18 @@
     bottom: calc(10px + env(safe-area-inset-bottom, 0px));
     padding: 6px;
     border-radius: 26px;
-    background: rgba(24, 22, 22, 0.66);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    backdrop-filter: blur(24px) saturate(180%);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 14px 40px rgba(0, 0, 0, 0.35);
+    background: rgba(24, 22, 22, 0.86);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(160%);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 14px 36px -12px rgba(0, 0, 0, 0.5);
   }
   .admin {
     padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
   }
   .nav-lens {
     border-radius: 20px;
-    background: rgba(255, 255, 255, 0.16);
-    background-image: linear-gradient(160deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 60%);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
   }
   .admin-nav a.active {
     color: var(--orange);

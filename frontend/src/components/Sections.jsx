@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { BRAND } from '../brand.js';
 import { formatNaira } from '../lib/format.js';
-import { MenuCard } from './ProductSheet.jsx';
+import MenuCard from './MenuCard.jsx';
 import { useCart } from '../state/cart.jsx';
 import { useAccount } from '../state/account.jsx';
 import ToppingIcon from '../game/ToppingIcon.jsx';
@@ -175,7 +175,7 @@ export function Ticker({ lines }) {
   );
 }
 
-export function MenuBoard({ items, openId, onOpen }) {
+export function MenuBoard({ items, liftedId, onOpen }) {
   const [cat, setCat] = useState('All');
   const cats = useMemo(() => {
     const present = [...new Set(items.map((i) => i.category))];
@@ -201,7 +201,7 @@ export function MenuBoard({ items, openId, onOpen }) {
         <div className="menu-cards" key={cat}>
           {shown.map((item, i) => (
             <div className="menu-card-wrap" style={{ '--i': i }} key={item.id}>
-              <MenuCard item={item} hidePhoto={openId === item.id} onOpen={onOpen} />
+              <MenuCard item={item} lifted={liftedId === item.id} onOpen={onOpen} />
             </div>
           ))}
         </div>
