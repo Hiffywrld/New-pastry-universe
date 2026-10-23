@@ -3,6 +3,7 @@ import { useOutletContext } from 'react-router-dom';
 import { api } from '../api/index.js';
 import { formatNaira } from '../lib/format.js';
 import { StatusChip, ago, shortDate, whatsappLink } from './shared.jsx';
+import { isDemo } from './kit.jsx';
 
 const SORTS = [
   ['recent', 'Recent'],
@@ -34,6 +35,10 @@ export default function Customers() {
   const repeat = buyers.filter((r) => r.orders > 1).length;
 
   const exportCsv = () => {
+    if (isDemo()) {
+      setError('In this preview, downloads are switched off. On the real kitchen site this saves a spreadsheet of your customers.');
+      return;
+    }
     const head = ['Name', 'Phone', 'Email', 'Orders', 'Spent', 'Last order', 'Favourite', 'Tags'];
     const lines = shown.map((r) => [r.name, r.phone, r.email || '', r.orders, r.spent, r.lastOrder ? r.lastOrder.slice(0, 10) : '', r.favourite || '', r.tags.join('; ')]);
     const csv = [head, ...lines].map((l) => l.map((v) => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');

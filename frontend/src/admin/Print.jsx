@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { api } from '../api/index.js';
 import { formatNaira } from '../lib/format.js';
-import { QR, longDate, trackingUrl, variantText } from './kit.jsx';
+import { QR, isDemo, longDate, trackingUrl, variantText } from './kit.jsx';
 import logo from '../assets/logo.webp';
 
 function PrintShell({ title, ready, children, extra }) {
@@ -19,9 +19,13 @@ function PrintShell({ title, ready, children, extra }) {
         </button>
         <strong>{title}</strong>
         {extra}
-        <button type="button" className="btn btn-primary btn-sm" disabled={!ready} onClick={() => window.print()}>
-          Print
-        </button>
+        {isDemo() ? (
+          <span className="muted small">Printing works on the real kitchen site.</span>
+        ) : (
+          <button type="button" className="btn btn-primary btn-sm" disabled={!ready} onClick={() => window.print()}>
+            Print
+          </button>
+        )}
       </div>
       {children}
     </div>
