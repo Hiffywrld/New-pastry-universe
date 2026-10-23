@@ -52,6 +52,9 @@ public class Order {
     private String notes;
     private int subtotal;
     private int deliveryFee;
+    private int discount;
+    private String rewardCode;
+    private Long accountId;
     private int total;
 
     @Enumerated(EnumType.STRING)
@@ -96,7 +99,7 @@ public class Order {
 
     public void recalculate() {
         this.subtotal = items.stream().mapToInt(OrderItem::getLineTotal).sum();
-        this.total = subtotal + deliveryFee;
+        this.total = Math.max(0, subtotal - discount) + deliveryFee;
     }
 
     public void moveTo(OrderStatus next, String note, String actor) {
@@ -139,6 +142,17 @@ public class Order {
         this.giftRecipientPhone = recipientPhone;
         this.giftNote = note;
     }
+
+    public void applyDiscount(int amount, String code) {
+        this.discount = Math.max(0, Math.min(amount, subtotal));
+        this.rewardCode = code;
+        recalculate();
+    }
+
+    public void setAccountId(Long accountId) { this.accountId = accountId; }
+    public Long getAccountId() { return accountId; }
+    public int getDiscount() { return discount; }
+    public String getRewardCode() { return rewardCode; }
 
     public void setNotes(String notes) { this.notes = notes; }
     public void setSessionId(String sessionId) { this.sessionId = sessionId; }

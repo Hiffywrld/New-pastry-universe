@@ -32,6 +32,7 @@ public final class OrderViews {
             List<Line> items,
             int subtotal,
             int deliveryFee,
+            int discount,
             int total,
             String zoneName,
             String address,
@@ -84,6 +85,8 @@ public final class OrderViews {
             List<Line> items,
             int subtotal,
             int deliveryFee,
+            int discount,
+            String rewardCode,
             String trackingToken,
             Instant paidAt,
             List<ReceiptView> receipts,
@@ -140,7 +143,7 @@ public final class OrderViews {
         return new PublicOrder(
                 o.getCode(), o.getTrackingToken(), o.getStatus().name(), label(o.getStatus(), o.getFulfilment()),
                 o.getPaymentStatus().name(), o.getFulfilment().name(), lines(o),
-                o.getSubtotal(), o.getDeliveryFee(), o.getTotal(), o.getZoneName(), o.getAddress(), o.getLandmark(),
+                o.getSubtotal(), o.getDeliveryFee(), o.getDiscount(), o.getTotal(), o.getZoneName(), o.getAddress(), o.getLandmark(),
                 o.getDeliveryDate(), o.getTimeSlot(), firstName, gift, o.getNotes(),
                 !o.getReceipts().isEmpty(), rejected, bank,
                 o.getFulfilment() == Fulfilment.PICKUP ? s.pickupAddress() : null,
@@ -169,6 +172,7 @@ public final class OrderViews {
                 .map(e -> new EventView(e.getStatus().name(), label(e.getStatus(), o.getFulfilment()), e.getNote(), e.getActor(), e.getCreatedAt()))
                 .toList();
         return new Detail(toSummary(o), o.getCustomerEmail(), o.getAddress(), o.getLandmark(), gift, o.getNotes(),
-                lines(o), o.getSubtotal(), o.getDeliveryFee(), o.getTrackingToken(), o.getPaidAt(), receipts, events);
+                lines(o), o.getSubtotal(), o.getDeliveryFee(), o.getDiscount(), o.getRewardCode(), o.getTrackingToken(),
+                o.getPaidAt(), receipts, events);
     }
 }

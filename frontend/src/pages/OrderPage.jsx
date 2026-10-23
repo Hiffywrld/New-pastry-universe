@@ -265,6 +265,12 @@ export default function OrderPage() {
                 <span>Subtotal</span>
                 <span className="num">{formatNaira(order.subtotal)}</span>
               </div>
+              {order.discount > 0 && (
+                <div className="row-between discount-row">
+                  <span>Welcome discount</span>
+                  <span className="num">−{formatNaira(order.discount)}</span>
+                </div>
+              )}
               <div className="row-between">
                 <span>{order.fulfilment === 'DELIVERY' ? 'Delivery' : 'Pickup'}</span>
                 <span className="num">{order.deliveryFee ? formatNaira(order.deliveryFee) : 'Free'}</span>

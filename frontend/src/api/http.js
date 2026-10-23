@@ -4,6 +4,7 @@
 
 const BASE = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 const TOKEN_KEY = 'pu-admin-token';
+const CUSTOMER_KEY = 'pu-customer-token';
 
 export class ApiError extends Error {
   constructor(message, status, fields) {
@@ -21,6 +22,23 @@ function adminToken() {
   }
 }
 
+function customerToken() {
+  try {
+    return localStorage.getItem(CUSTOMER_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function setCustomerToken(token) {
+  try {
+    if (token) localStorage.setItem(CUSTOMER_KEY, token);
+    else localStorage.removeItem(CUSTOMER_KEY);
+  } catch {
+    /* storage unavailable */
+  }
+}
+
 export function setAdminToken(token) {
   try {
     if (token) localStorage.setItem(TOKEN_KEY, token);
@@ -30,13 +48,11 @@ export function setAdminToken(token) {
   }
 }
 
-async function request(path, { method = 'GET', body, admin = false, form } = {}) {
+async function request(path, { method = 'GET', body, admin = false, customer = false, form } = {}) {
   const headers = {};
   if (body !== undefined) headers['Content-Type'] = 'application/json';
-  if (admin) {
-    const t = adminToken();
-    if (t) headers.Authorization = `Bearer ${t}`;
-  }
+  const t = admin ? adminToken() : customer ? customerToken() : null;
+  if (t) headers.Authorization = `Bearer ${t}`;
   let res;
   try {
     res = await fetch(BASE + path, {
@@ -51,6 +67,7 @@ async function request(path, { method = 'GET', body, admin = false, form } = {})
   const data = await res.json().catch(() => null);
   if (!res.ok) {
     if (res.status === 401 && admin) setAdminToken(null);
+    if (res.status === 401 && customer) setCustomerToken(null);
     throw new ApiError(data?.error || 'Something went wrong. Please try again.', res.status, data?.fields);
   }
   return data;
@@ -77,7 +94,7 @@ export const api = {
   mode: 'live',
 
   menu: () => request('/api/menu'),
-  createOrder: (body) => request('/api/orders', { method: 'POST', body }),
+  createOrder: (body) => request('/api/orders', { method: 'POST', body, customer: true }),
   track: (token) => request(`/api/orders/track/${encodeURIComponent(token)}`),
   lookup: (code, phone) => request('/api/orders/lookup', { method: 'POST', body: { code, phone } }),
   uploadReceipt: (token, file) => {
@@ -93,6 +110,21 @@ export const api = {
       body: JSON.stringify(payload),
       keepalive: true,
     }).catch(() => {}),
+
+  account: {
+    hasToken: () => Boolean(customerToken()),
+    config: () => request('/api/auth/config'),
+    signInWithGoogle: async (credential) => {
+      const res = await request('/api/auth/google', { method: 'POST', body: { credential } });
+      setCustomerToken(res.token);
+      return res.me;
+    },
+    demoSignIn: null,
+    signOut: () => setCustomerToken(null),
+    me: () => request('/api/me', { customer: true }),
+    startGame: () => request('/api/game/start', { method: 'POST', customer: true }),
+    finishGame: (result) => request('/api/game/finish', { method: 'POST', customer: true, body: result }),
+  },
 
   admin: {
     hasToken: () => Boolean(adminToken()),

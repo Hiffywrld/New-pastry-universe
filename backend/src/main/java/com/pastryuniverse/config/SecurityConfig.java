@@ -63,6 +63,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/admin/auth/login").permitAll()
                         .requestMatchers("/api/admin/**").hasAnyRole("OWNER", "STAFF")
+                        .requestMatchers("/api/me", "/api/me/**", "/api/game/**").hasRole("CUSTOMER")
                         .anyRequest().permitAll())
                 .oauth2ResourceServer(o -> o
                         .bearerTokenResolver(bearerTokenResolver())
@@ -82,6 +83,9 @@ public class SecurityConfig {
             String path = request.getRequestURI();
             if (path.startsWith("/api/admin/")) {
                 return "/api/admin/stream".equals(path) ? query.resolve(request) : header.resolve(request);
+            }
+            if (path.equals("/api/me") || path.startsWith("/api/me/") || path.startsWith("/api/game/")) {
+                return header.resolve(request);
             }
             return null; // public endpoints ignore tokens entirely
         };

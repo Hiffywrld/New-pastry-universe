@@ -5,6 +5,8 @@ The online shop and kitchen dashboard for Pastry Universe: premium banana bread,
 - **Shop:** treats sit in a glass display case. Open one, pick a size and topping, and add it to the cart. Checkout handles delivery (fee by area) or free pickup, a delivery date and time, and gift notes. Customers pay by bank transfer, upload their receipt, and follow their order live.
 - **Kitchen (admin):** a live dashboard (sales, orders, visitors on the site right now, revenue trend, best sellers, top areas, shopper funnel), an orders board you drag from "To bake" to "Delivered", a payments list for checking receipts, and settings for bank details, opening days, time slots and the shop front.
 
+- **Accounts and Topping Rush:** shoppers sign in with Google, then get one go at Topping Rush, a 45-second game where they top 3 banana bread orders. The result sets their welcome discount (5% up to 40%, with odds, caps and expiry set in the kitchen). The discount comes off their first order automatically, once per account and phone number.
+
 ## What's inside
 
 ```
@@ -76,6 +78,11 @@ The tests place an order, upload a receipt, log in as staff, confirm the payment
    - `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `ADMIN_NAME`: the first owner account
    - `APP_CORS_ORIGINS`: your shop's address, e.g. `https://pastryuniverse.ng`
    - `UPLOAD_DIR`: a mounted volume (default `/data/uploads`) so receipts survive restarts
+
+**Google sign-in**
+1. In [Google Cloud Console](https://console.cloud.google.com/), open **APIs & Services → Credentials → Create credentials → OAuth client ID**, and choose **Web application**.
+2. Under **Authorized JavaScript origins**, add the shop's address (e.g. `https://pastryuniverse.ng`) and `http://localhost:5173` for development.
+3. Copy the client ID and set it as `GOOGLE_CLIENT_ID` on the API. The shop reads it from `/api/auth/config`, so the frontend needs no extra setting.
 
 **Shop**
 1. Import the repo into Vercel and set the root directory to `frontend`.

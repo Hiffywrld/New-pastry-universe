@@ -16,6 +16,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     boolean existsByCode(String code);
 
+    List<Order> findTop20ByAccountIdOrderByCreatedAtDesc(Long accountId);
+
     @Query("select o from Order o where o.status in :statuses or (o.status = com.pastryuniverse.orders.OrderStatus.COMPLETED and o.updatedAt >= :since) order by o.deliveryDate asc, o.createdAt asc")
     List<Order> findBoard(@Param("statuses") Collection<OrderStatus> statuses, @Param("since") Instant since);
 

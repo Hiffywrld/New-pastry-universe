@@ -23,7 +23,8 @@ public record StoreSettings(
         List<String> timeSlots,
         List<String> ticker,
         String announcement,
-        Boolean shopOpen) {
+        Boolean shopOpen,
+        GameSettings game) {
 
     @JsonIgnore
     public int leadDaysOrDefault() {
@@ -43,6 +44,11 @@ public record StoreSettings(
     @JsonIgnore
     public List<String> timeSlotsOrDefault() {
         return timeSlots == null || timeSlots.isEmpty() ? List.of("9am – 12pm", "12pm – 3pm", "3pm – 6pm") : timeSlots;
+    }
+
+    @JsonIgnore
+    public GameSettings gameOrDefault() {
+        return game == null ? GameSettings.DEFAULTS : game.withDefaults();
     }
 
     @JsonIgnore

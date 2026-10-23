@@ -28,7 +28,8 @@ public class DashboardService {
     }
 
     public record Kpis(long salesToday, long paidOrdersToday, long salesYesterday, long ordersToday,
-                       long awaitingReview, long awaitingPayment, long dueTomorrow, int visitorsNow) {}
+                       long awaitingReview, long awaitingPayment, long dueTomorrow, int visitorsNow,
+                       long signupsToday, long gamesToday) {}
 
     public record DayPoint(LocalDate day, long revenue, long orders) {}
 
@@ -71,9 +72,12 @@ public class DashboardService {
                        COUNT(*) FILTER (WHERE delivery_date = :tomorrow AND status IN ('CONFIRMED','BAKING','READY')) AS due_tomorrow
                 FROM orders
                 """, p);
+        Map<String, Object> accounts = jdbc.queryForMap(
+                "SELECT (SELECT COUNT(*) FROM customers WHERE google_sub IS NOT NULL AND created_at >= :today) AS signups, "
+                        + "(SELECT COUNT(*) FROM game_sessions WHERE started_at >= :today) AS games", p);
         Kpis kpis = new Kpis(num(sales.get("sales_today")), num(sales.get("paid_today")), num(sales.get("sales_yesterday")),
                 num(counts.get("orders_today")), num(counts.get("awaiting_review")), num(counts.get("awaiting_payment")),
-                num(counts.get("due_tomorrow")), visitors.count());
+                num(counts.get("due_tomorrow")), visitors.count(), num(accounts.get("signups")), num(accounts.get("games")));
 
         Map<LocalDate, DayPoint> byDay = new HashMap<>();
         jdbc.query("""

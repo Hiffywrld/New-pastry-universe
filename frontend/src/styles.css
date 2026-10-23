@@ -2345,3 +2345,625 @@ body::before {
     height: 240px;
   }
 }
+
+/* ---------- Accounts ---------- */
+.account-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 42px;
+  padding: 0 12px;
+  border-radius: 999px;
+  color: var(--ink);
+  text-decoration: none;
+  font: 600 15px/1 var(--font-display);
+}
+.account-btn:hover {
+  background: var(--surface-2);
+}
+.account-btn.is-in {
+  padding: 0 4px;
+}
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--orange);
+  color: var(--on-orange);
+  font: 700 24px/1 var(--font-display);
+  flex: none;
+}
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.avatar-sm {
+  width: 34px;
+  height: 34px;
+  font-size: 15px;
+}
+.eyebrow-pill {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--orange-soft);
+  color: var(--ink);
+  font: 600 13px/1.2 var(--font-display);
+}
+.google-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+.google-slot {
+  min-height: 44px;
+}
+.google-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 50px;
+  padding: 0 24px 0 18px;
+  border-radius: 999px;
+  border: 0;
+  background: #1f1f1f;
+  color: #fff;
+  font: 500 16px/1 var(--font-body);
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+}
+.google-btn:hover {
+  background: #000;
+}
+
+/* Promo band on the shop */
+.promo {
+  background: var(--footer-bg);
+  color: var(--footer-fg);
+}
+.promo-inner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding-block: 26px;
+  flex-wrap: wrap;
+}
+.promo-toppings {
+  display: flex;
+  gap: 2px;
+}
+.promo-toppings span {
+  display: inline-block;
+  animation: bob 2.4s ease-in-out infinite;
+}
+@keyframes bob {
+  50% {
+    transform: translateY(-8px) rotate(12deg);
+  }
+}
+.promo-copy {
+  flex: 1;
+  min-width: 220px;
+}
+.promo-copy h2 {
+  font-size: clamp(22px, 2.6vw, 28px);
+}
+.promo-copy p {
+  color: var(--footer-muted);
+  margin-top: 4px;
+}
+
+/* Sign-up page */
+.signup {
+  background: linear-gradient(180deg, var(--case-top), var(--paper));
+  border-bottom: 1px solid var(--line);
+}
+.signup-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 40px;
+  align-items: center;
+  padding-block: 56px 72px;
+}
+.signup-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.signup-copy h1 {
+  font-size: clamp(38px, 5.6vw, 64px);
+  font-weight: 700;
+  max-width: 13ch;
+}
+.signup-pct {
+  display: inline-block;
+  padding: 0 0.12em;
+  background: var(--orange);
+  color: var(--on-orange);
+  border-radius: 0.16em;
+  transform: rotate(-3deg);
+}
+.signup-copy .lead {
+  max-width: 44ch;
+  margin: 0;
+}
+.fine-print {
+  max-width: 52ch;
+}
+.signup-art {
+  position: relative;
+  aspect-ratio: 1;
+  max-width: 440px;
+  width: 100%;
+  justify-self: center;
+}
+.floater {
+  position: absolute;
+  animation: float 4s ease-in-out infinite;
+}
+@keyframes float {
+  50% {
+    transform: translateY(-16px) rotate(20deg);
+  }
+}
+.signup-loaf {
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  top: 40%;
+  height: 26%;
+}
+.signup-loaf-top {
+  position: absolute;
+  inset: 0 0 30% 0;
+  border-radius: 40px 40px 18px 18px;
+  background: linear-gradient(180deg, #8c5426, #5a3214);
+  box-shadow: inset 0 8px 0 rgba(255, 255, 255, 0.12);
+}
+.signup-loaf-tray {
+  position: absolute;
+  left: -6%;
+  right: -6%;
+  bottom: 0;
+  height: 48%;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #f1f1f1, #b9bcc0 50%, #e6e7e9);
+}
+.sticker-lg {
+  --s: 120px;
+}
+.sticker-lg .sticker-top {
+  font-size: 15px;
+}
+.sticker-lg .sticker-main {
+  font-size: 36px;
+}
+.signup-sticker {
+  position: absolute;
+  right: 6%;
+  top: 14%;
+  transform: rotate(10deg);
+  animation: wobble 3s ease-in-out infinite;
+}
+@keyframes wobble {
+  50% {
+    transform: rotate(-6deg) scale(1.05);
+  }
+}
+
+/* Account page */
+.account-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.account-head .page-title {
+  margin: 0;
+}
+.sign-out {
+  margin-left: auto;
+}
+.account-main {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  max-width: 760px;
+}
+.account-h2 {
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+.play-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 24px;
+  border-radius: 20px;
+  background: var(--footer-bg);
+  color: var(--footer-fg);
+}
+.play-cta h2 {
+  font-size: 26px;
+}
+.play-cta p {
+  color: var(--footer-muted);
+  margin-top: 4px;
+}
+.history {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+.history a {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--line);
+  text-decoration: none;
+}
+.history a:hover {
+  background: var(--surface-2);
+}
+.history-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-weight: 600;
+  flex: none;
+}
+
+/* Reward card, shaped like a coupon */
+.reward-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 22px;
+  align-items: center;
+  padding: 22px 24px;
+  border-radius: 20px;
+  background: var(--orange);
+  color: var(--on-orange);
+  overflow: hidden;
+}
+.reward-card::before,
+.reward-card::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 26px;
+  height: 26px;
+  margin-top: -13px;
+  border-radius: 50%;
+  background: var(--paper);
+}
+.reward-card::before {
+  left: -13px;
+}
+.reward-card::after {
+  right: -13px;
+}
+.reward-card.is-done {
+  background: var(--surface-2);
+  color: var(--muted);
+}
+.reward-big {
+  display: flex;
+  flex-direction: column;
+  padding-right: 22px;
+  border-right: 2px dashed rgba(32, 30, 30, 0.35);
+}
+.reward-big strong {
+  font: 700 56px/1 var(--font-display);
+}
+.reward-big span {
+  font: 500 14px/1.2 var(--font-display);
+  max-width: 10ch;
+}
+.reward-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.reward-info .muted {
+  color: inherit;
+  opacity: 0.8;
+}
+.reward-state {
+  font: 700 13px/1 var(--font-display);
+  letter-spacing: 0.04em;
+}
+.reward-toggle {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--orange-soft);
+  border: 1.5px solid var(--orange);
+  font-weight: 500;
+  cursor: pointer;
+}
+.reward-toggle input {
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  accent-color: var(--ink);
+  flex: none;
+}
+.discount-row {
+  color: var(--good);
+  font-weight: 600;
+}
+
+/* ---------- Topping Rush ---------- */
+.play-intro,
+.play-result,
+.play-done {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-block: 40px 64px;
+}
+.play-intro .lead,
+.play-result .lead {
+  margin: 0;
+}
+.rules {
+  list-style: none;
+  margin: 0;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.rules li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.rule-bad {
+  display: inline-block;
+  min-width: 42px;
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: var(--danger-soft);
+  color: var(--danger);
+  font: 700 14px/1.4 var(--font-display);
+  text-align: center;
+}
+.ladder-title {
+  font-size: 20px;
+  margin-top: 6px;
+}
+.ladder {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ladder li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+.ladder strong {
+  font: 700 20px/1 var(--font-display);
+}
+.ladder .ladder-top {
+  background: var(--orange);
+  color: var(--on-orange);
+}
+.play-start {
+  min-height: 56px;
+  font-size: 18px;
+}
+.arena-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  background: #14100e;
+}
+.arena {
+  position: relative;
+  height: 100%;
+  max-height: 940px;
+  width: min(560px, 100%);
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 120%, rgba(240, 163, 52, 0.28), transparent 60%),
+    linear-gradient(180deg, var(--case-top), var(--case-bottom));
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+.arena-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+.hud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  padding: calc(12px + env(safe-area-inset-top, 0px)) max(14px, env(safe-area-inset-right, 0px)) 0 max(14px, env(safe-area-inset-left, 0px));
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.hud-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--font-display);
+}
+.hud-round {
+  font-weight: 600;
+  font-size: 16px;
+}
+.hud-time {
+  font-weight: 700;
+  font-size: 26px;
+}
+.hud-time.low {
+  color: var(--danger);
+  animation: pulse-text 0.5s ease-in-out infinite alternate;
+}
+@keyframes pulse-text {
+  to {
+    transform: scale(1.12);
+  }
+}
+.hud-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+.hud-bar span {
+  display: block;
+  height: 100%;
+  background: var(--good);
+  transform-origin: left center;
+  transition: transform 0.25s linear;
+}
+.hud-bar span.low {
+  background: var(--danger);
+}
+.order-card-game {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 10px;
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 6px 18px rgba(40, 25, 10, 0.14);
+}
+.need {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: 'icon count' 'icon label';
+  align-items: center;
+  column-gap: 8px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  transition: background-color 0.2s, transform 0.2s;
+}
+.need .topping-icon {
+  grid-area: icon;
+}
+.need-label {
+  grid-area: label;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  color: var(--muted);
+}
+.need strong {
+  grid-area: count;
+  font: 700 18px/1 var(--font-display);
+}
+.need.done {
+  background: var(--good-soft);
+  color: var(--good);
+}
+.countdown {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  font: 700 120px/1 var(--font-display);
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.35);
+  animation: count-pop 0.75s var(--ease);
+  pointer-events: none;
+}
+.countdown.small {
+  font-size: 32px;
+}
+@keyframes count-pop {
+  from {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+.play-result {
+  position: relative;
+  align-items: flex-start;
+}
+.result-big {
+  font-size: clamp(64px, 14vw, 120px);
+  font-weight: 700;
+  line-height: 1;
+}
+.confetti {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 40;
+}
+.topping-icon {
+  display: inline-block;
+  flex: none;
+}
+
+@media (max-width: 860px) {
+  .signup-grid {
+    grid-template-columns: minmax(0, 1fr);
+    padding-block: 32px 48px;
+  }
+  .signup-art {
+    max-width: 250px;
+    order: -1;
+  }
+}
+@media (max-width: 560px) {
+  .account-btn span:not(.avatar) {
+    display: none;
+  }
+  .reward-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .reward-big {
+    border-right: 0;
+    border-bottom: 2px dashed rgba(32, 30, 30, 0.35);
+    padding: 0 0 14px;
+  }
+  .arena {
+    width: 100%;
+  }
+}

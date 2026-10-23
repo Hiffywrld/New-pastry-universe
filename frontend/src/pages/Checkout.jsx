@@ -5,6 +5,7 @@ import { formatNaira } from '../lib/format.js';
 import { sessionId, track } from '../lib/analytics.js';
 import { useMenu } from '../menu/useMenu.js';
 import { lineLabel, useCart } from '../state/cart.jsx';
+import { useAccount } from '../state/account.jsx';
 
 const SAVED = 'pu-customer';
 const PHONE_RE = /^(\+?234|0)?[789][01]\d{8}$/;
@@ -32,6 +33,8 @@ function dateLabel(iso, index) {
 export default function Checkout() {
   const { menu } = useMenu();
   const { lines, subtotal, clear } = useCart();
+  const { me, status: accountStatus, usableReward, refresh: refreshAccount } = useAccount();
+  const [useReward, setUseReward] = useState(true);
   const navigate = useNavigate();
   const saved = useMemo(loadSaved, []);
   const [form, setForm] = useState({
@@ -76,9 +79,15 @@ export default function Checkout() {
     setErrors((er) => ({ ...er, [key]: undefined }));
   };
 
+  useEffect(() => {
+    if (!me?.profile) return;
+    setForm((f) => ({ ...f, name: f.name || me.profile.name || '', email: f.email || me.profile.email || '' }));
+  }, [me?.profile?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const zone = zones.find((z) => String(z.id) === String(form.zoneId));
   const fee = form.fulfilment === 'DELIVERY' ? zone?.fee ?? null : 0;
-  const total = subtotal + (fee || 0);
+  const discount = usableReward && useReward ? Math.min(usableReward.maxAmount, Math.round((subtotal * usableReward.percent) / 100)) : 0;
+  const total = subtotal - discount + (fee || 0);
   const closed = menu?.store?.shopOpen === false;
 
   const validate = () => {
@@ -120,7 +129,9 @@ export default function Checkout() {
         gift: form.isGift ? { recipientName: form.giftName, recipientPhone: form.giftPhone || undefined, note: form.giftNote || undefined } : undefined,
         notes: form.notes || undefined,
         sessionId: sessionId(),
+        useReward: Boolean(usableReward && useReward),
       });
+      if (accountStatus === 'in') refreshAccount();
       try {
         const { name, phone, email, fulfilment, zoneId, address, landmark } = form;
         localStorage.setItem(SAVED, JSON.stringify({ name, phone, email, fulfilment, zoneId, address, landmark }));
@@ -308,6 +319,12 @@ export default function Checkout() {
                 <span>Subtotal</span>
                 <span className="num">{formatNaira(subtotal)}</span>
               </div>
+              {discount > 0 && (
+                <div className="row-between discount-row">
+                  <span>Welcome discount ({usableReward.percent}%)</span>
+                  <span className="num">−{formatNaira(discount)}</span>
+                </div>
+              )}
               <div className="row-between">
                 <span>{form.fulfilment === 'DELIVERY' ? 'Delivery' : 'Pickup'}</span>
                 <span className="num">{form.fulfilment === 'PICKUP' ? 'Free' : fee == null ? 'Choose area' : formatNaira(fee)}</span>
@@ -317,6 +334,19 @@ export default function Checkout() {
                 <span className="num">{formatNaira(total)}</span>
               </div>
             </div>
+            {usableReward ? (
+              <label className="reward-toggle">
+                <input type="checkbox" checked={useReward} onChange={(e) => setUseReward(e.target.checked)} />
+                <span>
+                  Use my {usableReward.percent}% welcome discount
+                  <span className="muted small block">Up to {formatNaira(usableReward.maxAmount)} off. One use only.</span>
+                </span>
+              </label>
+            ) : accountStatus !== 'in' ? (
+              <p className="muted small">
+                <Link to="/account">Sign up</Link> to win up to 40% off your first order.
+              </p>
+            ) : null}
             {serverError && <p className="form-error" role="alert">{serverError}</p>}
             <button type="submit" className="btn btn-primary btn-block" disabled={busy || closed}>
               {closed ? 'Shop closed for now' : busy ? 'Placing your order…' : `Place order · ${formatNaira(total)}`}

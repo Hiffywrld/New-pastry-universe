@@ -1,5 +1,7 @@
 package com.pastryuniverse.orders;
 
+import com.pastryuniverse.accounts.Reward;
+import com.pastryuniverse.accounts.RewardRepository;
 import com.pastryuniverse.catalog.DeliveryZone;
 import com.pastryuniverse.catalog.DeliveryZoneRepository;
 import com.pastryuniverse.catalog.Variant;
@@ -41,9 +43,12 @@ public class OrderService {
     private final SettingsService settings;
     private final FileStorage storage;
     private final LiveHub live;
+    private final RewardRepository rewards;
 
     public OrderService(OrderRepository orders, CustomerRepository customers, VariantRepository variants,
-                        DeliveryZoneRepository zones, SettingsService settings, FileStorage storage, LiveHub live) {
+                        DeliveryZoneRepository zones, SettingsService settings, FileStorage storage, LiveHub live,
+                        RewardRepository rewards) {
+        this.rewards = rewards;
         this.orders = orders;
         this.customers = customers;
         this.variants = variants;
@@ -56,7 +61,7 @@ public class OrderService {
     // Customer side ---------------------------------------------------------
 
     @Transactional
-    public OrderViews.PublicOrder create(CreateOrderRequest req) {
+    public OrderViews.PublicOrder create(CreateOrderRequest req, Long accountId) {
         StoreSettings s = settings.get();
         if (!s.acceptsOrders()) throw ApiException.conflict("The shop isn't taking orders right now. Please check back soon.");
 
@@ -109,8 +114,22 @@ public class OrderService {
                     v.getProduct().getName(), v.getSizeLabel(), v.getOptionLabel(), v.getPrice(), qty));
         });
         order.recalculate();
+        order.setAccountId(accountId);
+
+        Reward reward = null;
+        if (Boolean.TRUE.equals(req.useReward())) {
+            if (accountId == null) throw ApiException.badRequest("Sign in to use your welcome discount.");
+            reward = rewards.findByAccountId(accountId).filter(r -> r.isUsable(Instant.now()))
+                    .orElseThrow(() -> ApiException.conflict("Your welcome discount has expired or was already used."));
+            if (rewards.existsByRedeemedPhone(phone)) {
+                throw ApiException.conflict("This phone number has already used a welcome discount.");
+            }
+            order.applyDiscount(reward.discountFor(order.getSubtotal()), reward.getCode());
+        }
+
         order.moveTo(OrderStatus.AWAITING_PAYMENT, null, "Customer");
         Order saved = orders.save(order);
+        if (reward != null) reward.redeem(saved.getId(), phone);
 
         OrderViews.Summary summary = OrderViews.toSummary(saved);
         LiveHub.afterCommit(() -> live.toAdmins("order", Map.of("kind", "created", "order", summary)));
@@ -187,6 +206,9 @@ public class OrderService {
         boolean needsPayment = next != OrderStatus.CANCELLED && order.getPaymentStatus() != PaymentStatus.CONFIRMED;
         if (needsPayment) order.markPaid(Instant.now());
         order.moveTo(next, blankToNull(note), actor);
+        if (next == OrderStatus.CANCELLED && order.getRewardCode() != null) {
+            rewards.findByCode(order.getRewardCode()).ifPresent(Reward::restore);
+        }
         publish(order, "status");
         return OrderViews.toDetail(order);
     }

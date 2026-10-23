@@ -869,3 +869,18 @@
     right: 16px;
   }
 }
+
+.tier-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.discount-row {
+  color: var(--good);
+  font-weight: 600;
+}
+@media (max-width: 760px) {
+  .tier-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

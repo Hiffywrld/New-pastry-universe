@@ -23,7 +23,8 @@ public record CreateOrderRequest(
         @NotBlank(message = "Choose a time.") String timeSlot,
         @Valid Gift gift,
         @Size(max = 500, message = "Keep notes under 500 characters.") String notes,
-        @Size(max = 64) String sessionId) {
+        @Size(max = 64) String sessionId,
+        Boolean useReward) {
 
     public record Item(
             @NotNull Long variantId,

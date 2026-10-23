@@ -12,6 +12,7 @@ public record AppProperties(
         String jwtSecret,
         int jwtHours,
         String uploadDir,
+        String googleClientId,
         BootstrapAdmin bootstrapAdmin) {
 
     public record BootstrapAdmin(String email, String password, String name) {}

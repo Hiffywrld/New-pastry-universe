@@ -231,6 +231,9 @@ export default function Dashboard() {
             <i className="pulse" aria-hidden="true" /> On the site now
           </p>
           <p className="kpi-value num">{visitorsShown}</p>
+          <p className="kpi-delta">
+            {k.signupsToday ?? 0} sign-ups · {k.gamesToday ?? 0} games today
+          </p>
         </div>
       </div>
 

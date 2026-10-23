@@ -4,6 +4,8 @@ import { BRAND } from '../brand.js';
 import { formatNaira } from '../lib/format.js';
 import { MenuCard } from './ProductSheet.jsx';
 import { useCart } from '../state/cart.jsx';
+import { useAccount } from '../state/account.jsx';
+import ToppingIcon from '../game/ToppingIcon.jsx';
 import logo from '../assets/logo.webp';
 
 const external = { target: '_blank', rel: 'noopener noreferrer' };
@@ -35,6 +37,54 @@ function SectionLink({ id, children }) {
   );
 }
 
+function AccountButton() {
+  const { me, status } = useAccount();
+  const first = me?.profile?.name?.split(' ')[0];
+  return (
+    <Link to="/account" className={`account-btn${status === 'in' ? ' is-in' : ''}`} aria-label={status === 'in' ? `Your account, ${first}` : 'Sign in'}>
+      {status === 'in' ? (
+        <span className="avatar avatar-sm" aria-hidden="true">
+          {me.profile.avatarUrl ? <img src={me.profile.avatarUrl} alt="" referrerPolicy="no-referrer" /> : first?.[0]}
+        </span>
+      ) : (
+        <>
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" strokeWidth="2" />
+            <path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+          <span>Sign in</span>
+        </>
+      )}
+    </Link>
+  );
+}
+
+export function GamePromo() {
+  const { status, me, config } = useAccount();
+  if (!config?.gameEnabled) return null;
+  if (status === 'in' && (me?.game?.played || me?.reward)) return null;
+  return (
+    <section className="promo">
+      <div className="wrap promo-inner">
+        <div className="promo-toppings" aria-hidden="true">
+          {['raisin', 'almond', 'choc', 'coconut', 'banana'].map((k, i) => (
+            <span key={k} style={{ animationDelay: `${i * 0.35}s` }}>
+              <ToppingIcon kind={k} size={40} />
+            </span>
+          ))}
+        </div>
+        <div className="promo-copy">
+          <h2>Win up to {config.topPercent}% off your first order</h2>
+          <p>Sign up and play Topping Rush: 45 seconds, 3 orders, one go.</p>
+        </div>
+        <Link to={status === 'in' ? '/play' : '/account'} className="btn btn-orange">
+          {status === 'in' ? 'Play now' : 'Sign up and play'}
+        </Link>
+      </div>
+    </section>
+  );
+}
+
 export function Header({ simple = false }) {
   const { count, setOpen, bump } = useCart();
   return (
@@ -51,6 +101,7 @@ export function Header({ simple = false }) {
             <Link to="/track">Track order</Link>
           </nav>
         )}
+        <AccountButton />
         <button type="button" className="cart-btn" onClick={() => setOpen(true)} aria-label={`Cart, ${count} items`}>
           <BagIcon />
           <span>Cart</span>

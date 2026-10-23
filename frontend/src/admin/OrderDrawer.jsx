@@ -204,6 +204,12 @@ export default function OrderDrawer({ id, onClose }) {
                 ))}
               </ul>
               <div className="summary-totals">
+                {order.discount > 0 && (
+                  <div className="row-between discount-row">
+                    <span>Welcome discount{order.rewardCode ? ` (${order.rewardCode})` : ''}</span>
+                    <span className="num">−{formatNaira(order.discount)}</span>
+                  </div>
+                )}
                 <div className="row-between">
                   <span>Delivery</span>
                   <span className="num">{order.deliveryFee ? formatNaira(order.deliveryFee) : 'Free'}</span>

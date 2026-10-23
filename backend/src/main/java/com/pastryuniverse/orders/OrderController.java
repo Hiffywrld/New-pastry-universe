@@ -1,5 +1,6 @@
 package com.pastryuniverse.orders;
 
+import com.pastryuniverse.accounts.CustomerTokens;
 import com.pastryuniverse.common.RateLimiter;
 import com.pastryuniverse.live.LiveHub;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,18 +27,21 @@ public class OrderController {
     private final OrderService orders;
     private final RateLimiter limiter;
     private final LiveHub live;
+    private final CustomerTokens tokens;
 
-    public OrderController(OrderService orders, RateLimiter limiter, LiveHub live) {
+    public OrderController(OrderService orders, RateLimiter limiter, LiveHub live, CustomerTokens tokens) {
         this.orders = orders;
         this.limiter = limiter;
         this.live = live;
+        this.tokens = tokens;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OrderViews.PublicOrder create(@Valid @RequestBody CreateOrderRequest req, HttpServletRequest http) {
         limiter.check("order:" + http.getRemoteAddr(), 8, Duration.ofMinutes(10));
-        return orders.create(req);
+        // Signing in is optional: a valid shopper token links the order to their account.
+        return orders.create(req, tokens.accountIdFrom(http.getHeader("Authorization")));
     }
 
     @GetMapping("/track/{token}")

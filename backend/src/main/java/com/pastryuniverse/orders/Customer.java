@@ -18,6 +18,9 @@ public class Customer {
     private String name;
     private String phone;
     private String email;
+    private String googleSub;
+    private String avatarUrl;
+    private Instant lastLoginAt;
     private Instant createdAt = Instant.now();
     private Instant updatedAt = Instant.now();
 
@@ -35,6 +38,24 @@ public class Customer {
         this.updatedAt = Instant.now();
     }
 
+    /** A signed-in shopper, created from their Google account. */
+    public static Customer fromGoogle(String sub, String name, String email, String avatarUrl) {
+        Customer c = new Customer(name, null, email);
+        c.googleSub = sub;
+        c.avatarUrl = avatarUrl;
+        return c;
+    }
+
+    public void signedIn(String name, String email, String avatarUrl) {
+        if (name != null && !name.isBlank()) this.name = name;
+        if (email != null && !email.isBlank()) this.email = email;
+        this.avatarUrl = avatarUrl;
+        this.lastLoginAt = Instant.now();
+        this.updatedAt = Instant.now();
+    }
+
+    public String getAvatarUrl() { return avatarUrl; }
+    public String getGoogleSub() { return googleSub; }
     public Long getId() { return id; }
     public String getName() { return name; }
     public String getPhone() { return phone; }

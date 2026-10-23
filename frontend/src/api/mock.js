@@ -4,7 +4,7 @@
 
 import demoMenu from './demo-menu.json';
 
-const KEY = 'pu-demo-v2';
+const KEY = 'pu-demo-v3';
 const DAY = 86_400_000;
 const LAGOS_OFFSET = 60 * 60_000; // UTC+1, no daylight saving
 
@@ -105,8 +105,9 @@ function seed() {
     ticker: demoMenu.store.ticker,
     announcement: '',
     shopOpen: true,
+    game: { enabled: true, percentByOrders: [5, 10, 15, 25], perfectPercent: 40, perfectMinTimeLeft: 8, maxDiscount: 5000, validDays: 14 },
   };
-  const db = { settings, orders: [], events: [], nextId: 1 };
+  const db = { settings, orders: [], events: [], nextId: 1, account: null, reward: null, played: false, signupsToday: 3, gamesToday: 5 };
   const now = Date.now();
   const popular = [...VARIANTS.keys()];
   for (let i = 0; i < 46; i++) {
@@ -204,8 +205,18 @@ function buildOrder(db, req, createdAt = Date.now()) {
     landmark: zone ? req.landmark || null : null, deliveryDate: req.deliveryDate, timeSlot: req.timeSlot,
     gift, notes: req.notes || null, items, subtotal, deliveryFee: fee, total: subtotal + fee,
     receipts: [], events: [{ status: 'AWAITING_PAYMENT', note: null, actor: 'Customer', at: createdAt }],
-    createdAt, updatedAt: createdAt, paidAt: null, rejectedReason: null,
+    createdAt, updatedAt: createdAt, paidAt: null, rejectedReason: null, discount: 0, rewardCode: null, accountId: null,
   };
+  if (req.useReward) {
+    const r = db.reward;
+    if (!db.account) throw new MockError('Sign in to use your welcome discount.');
+    if (!r || r.redeemed || r.percent <= 0 || Date.now() > Date.parse(r.expiresAt)) throw new MockError('Your welcome discount has expired or was already used.', 409);
+    o.discount = Math.min(r.maxAmount, Math.round((subtotal * r.percent) / 100));
+    o.rewardCode = r.code;
+    o.total = subtotal - o.discount + fee;
+    r.redeemed = true;
+  }
+  if (req.accountId) o.accountId = req.accountId;
   db.orders.push(o);
   return o;
 }
@@ -219,6 +230,7 @@ function toPublic(o, s) {
   return {
     code: o.code, token: o.token, status: o.status, statusLabel: label(o.status, o.fulfilment), paymentStatus: o.paymentStatus,
     fulfilment: o.fulfilment, items: o.items, subtotal: o.subtotal, deliveryFee: o.deliveryFee, total: o.total,
+    discount: o.discount || 0,
     zoneName: o.zoneName, address: o.address, landmark: o.landmark, deliveryDate: o.deliveryDate, timeSlot: o.timeSlot,
     customerName: o.customerName.split(/\s+/)[0], gift: o.gift ? { recipientName: o.gift.recipientName, note: o.gift.note } : undefined,
     notes: o.notes, receiptUploaded: o.receipts.length > 0, rejectedReason: o.paymentStatus === 'REJECTED' ? o.rejectedReason : undefined,
@@ -249,7 +261,7 @@ function toDetail(o) {
   return {
     summary: toSummary(o), customerEmail: o.customerEmail || undefined, address: o.address || undefined, landmark: o.landmark || undefined,
     gift: o.gift ? { ...o.gift, recipientPhone: displayPhone(o.gift.recipientPhone) } : undefined, notes: o.notes || undefined,
-    items: o.items, subtotal: o.subtotal, deliveryFee: o.deliveryFee, trackingToken: o.token,
+    items: o.items, subtotal: o.subtotal, deliveryFee: o.deliveryFee, discount: o.discount || 0, rewardCode: o.rewardCode || undefined, trackingToken: o.token,
     paidAt: o.paidAt ? new Date(o.paidAt).toISOString() : undefined,
     receipts: o.receipts.map((r) => ({ id: r.id, contentType: r.contentType, sizeBytes: 0, createdAt: new Date(r.createdAt).toISOString() })),
     events: o.events.map((e) => ({ status: e.status, label: label(e.status, o.fulfilment), note: e.note || undefined, actor: e.actor, at: new Date(e.at).toISOString() })),
@@ -319,7 +331,7 @@ export const api = {
     await wait(500);
     const db = load();
     if (!db.settings.shopOpen) throw new MockError("The shop isn't taking orders right now. Please check back soon.", 409);
-    const o = buildOrder(db, req);
+    const o = buildOrder(db, { ...req, accountId: db.account ? db.account.id : null });
     save();
     publish(o, 'created');
     return toPublic(o, db.settings);
@@ -361,6 +373,63 @@ export const api = {
     db.events.push({ session: e.sessionId, type: e.type, at: Date.now() });
     if (db.events.length > 2000) db.events.splice(0, 500);
     save();
+  },
+
+  account: {
+    hasToken: () => Boolean(load().account),
+    config: async () => {
+      const g = load().settings.game;
+      return { googleClientId: '', demo: true, gameEnabled: g.enabled, topPercent: g.perfectPercent, percentByOrders: g.percentByOrders, perfectMinTimeLeft: g.perfectMinTimeLeft, maxDiscount: g.maxDiscount, validDays: g.validDays };
+    },
+    signInWithGoogle: async () => api.account.demoSignIn(),
+    demoSignIn: async () => {
+      await wait(500);
+      const db = load();
+      if (!db.account) {
+        db.account = { id: 9001, name: 'Demo Shopper', email: 'demo.shopper@gmail.com', avatarUrl: null };
+        db.signupsToday++;
+      }
+      save();
+      return api.account.me();
+    },
+    signOut: () => {
+      const db = load();
+      db.account = null;
+      db.reward = null;
+      db.played = false;
+      save();
+    },
+    me: async () => {
+      await wait(150);
+      const db = load();
+      if (!db.account) throw new MockError('Please sign in again.', 401);
+      const g = db.settings.game;
+      const reward = db.reward && { ...db.reward, expired: Date.now() > Date.parse(db.reward.expiresAt) };
+      const orders = db.orders.filter((o) => o.accountId === db.account.id).sort((a, b) => b.createdAt - a.createdAt).map((o) => ({
+        code: o.code, token: o.token, total: o.total, status: o.status, statusLabel: label(o.status, o.fulfilment),
+        itemsText: toSummary(o).itemsText, createdAt: new Date(o.createdAt).toISOString(),
+      }));
+      return { profile: db.account, reward, game: { enabled: g.enabled, played: db.played || Boolean(db.reward), seconds: 45, topPercent: g.perfectPercent }, orders };
+    },
+    startGame: async () => {
+      await wait(200);
+      const db = load();
+      if (db.reward) throw new MockError("You've already played. Your reward is on your account page.", 409);
+      db.played = true;
+      db.gamesToday++;
+      save();
+      return { sessionId: 'demo', seed: Math.floor(Math.random() * 2 ** 31), seconds: 45 };
+    },
+    finishGame: async ({ ordersCompleted, timeLeft, mistakes }) => {
+      await wait(500);
+      const db = load();
+      const g = db.settings.game;
+      let pct = g.percentByOrders[Math.max(0, Math.min(3, ordersCompleted))];
+      if (ordersCompleted === 3 && mistakes === 0 && timeLeft >= g.perfectMinTimeLeft) pct = Math.max(pct, g.perfectPercent);
+      db.reward = { code: 'PU' + code().slice(3) + 'X', percent: pct, maxAmount: g.maxDiscount, expiresAt: new Date(Date.now() + g.validDays * DAY).toISOString(), redeemed: false, expired: false };
+      save();
+      return { ordersCompleted, timeLeft, mistakes, reward: db.reward };
+    },
   },
 
   admin: {
@@ -425,6 +494,8 @@ export const api = {
           awaitingPayment: db.orders.filter((o) => o.status === 'AWAITING_PAYMENT').length,
           dueTomorrow: db.orders.filter((o) => o.deliveryDate === tomorrow && ['CONFIRMED', 'BAKING', 'READY'].includes(o.status)).length,
           visitorsNow: visitors,
+          signupsToday: db.signupsToday,
+          gamesToday: db.gamesToday,
         },
         revenue,
         bestSellers: [...sellers.values()].sort((a, b) => b.quantity - a.quantity).slice(0, 6),

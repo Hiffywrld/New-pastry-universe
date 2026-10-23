@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import DisplayCase from '../components/DisplayCase.jsx';
 import ProductSheet from '../components/ProductSheet.jsx';
 import { canMorph, morph } from '../lib/motion.js';
-import { Announcement, Delivery, Intro, MenuBoard, Ticker } from '../components/Sections.jsx';
+import { Announcement, Delivery, GamePromo, Intro, MenuBoard, Ticker } from '../components/Sections.jsx';
 import { useMenu } from '../menu/useMenu.js';
 import { useCart } from '../state/cart.jsx';
 
@@ -65,6 +65,7 @@ export default function Shop() {
         <div className="case case-loading" aria-busy="true" aria-label="Loading the display case" />
       )}
       <Ticker lines={menu?.store?.ticker} />
+      <GamePromo />
       {items.length > 0 && <MenuBoard items={items} openId={sheet?.id} onOpen={(item) => openSheet(item)} />}
       {menu && <Delivery delivery={menu.delivery} store={menu.store} />}
       {sheet && items.find((i) => i.id === sheet.id) && (

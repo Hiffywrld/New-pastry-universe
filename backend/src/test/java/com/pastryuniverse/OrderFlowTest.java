@@ -36,7 +36,7 @@ class OrderFlowTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        jdbc.update("TRUNCATE orders, customers, analytics_events RESTART IDENTITY CASCADE");
+        jdbc.update("TRUNCATE orders, customers, analytics_events, rewards, game_sessions RESTART IDENTITY CASCADE");
         menu = read(mvc.perform(get("/api/menu")).andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
     }
 

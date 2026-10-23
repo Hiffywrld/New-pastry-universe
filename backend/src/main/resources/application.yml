@@ -44,6 +44,8 @@ app:
   # Secret used to sign staff login tokens. Set a long random value in production.
   jwt-secret: ${JWT_SECRET:}
   jwt-hours: 12
+  # Google sign-in for shoppers: the OAuth client ID from Google Cloud Console.
+  google-client-id: ${GOOGLE_CLIENT_ID:}
   # Where uploaded payment receipts are stored.
   upload-dir: ${UPLOAD_DIR:./data/uploads}
   # The first owner account, created on startup if there are no staff yet.

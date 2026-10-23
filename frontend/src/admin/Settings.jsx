@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { api } from '../api/index.js';
 
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const GAME_DEFAULTS = { enabled: true, percentByOrders: [5, 10, 15, 25], perfectPercent: 40, perfectMinTimeLeft: 8, maxDiscount: 5000, validDays: 14 };
 
 export default function Settings() {
   const [s, setS] = useState(null);
@@ -14,6 +15,12 @@ export default function Settings() {
   }, []);
 
   if (!s) return <p className="muted">{error || 'Loading settings…'}</p>;
+
+  const game = { ...GAME_DEFAULTS, ...(s.game || {}) };
+  const setGame = (patch) => {
+    setStatus('');
+    setS((cur) => ({ ...cur, game: { ...GAME_DEFAULTS, ...(cur.game || {}), ...patch } }));
+  };
 
   const set = (key) => (e) => {
     setStatus('');
@@ -84,6 +91,54 @@ export default function Settings() {
         <div className="field">
           <label htmlFor="set-slots">Time slots (one per line)</label>
           <textarea id="set-slots" rows={3} value={(s.timeSlots || []).join('\n')} onChange={setLines('timeSlots')} />
+        </div>
+      </section>
+
+      <section className="card">
+        <h2>Topping Rush rewards</h2>
+        <p className="muted small">The welcome game shoppers play after signing up. One go per account and phone number; the discount is for their first order.</p>
+        <label className="switch big">
+          <input type="checkbox" checked={game.enabled !== false} onChange={(e) => setGame({ enabled: e.target.checked })} />
+          <span>{game.enabled !== false ? 'Game is on' : 'Game is off'}</span>
+        </label>
+        <div className="tier-grid">
+          {['No orders finished', '1 order', '2 orders', 'All 3 orders'].map((label, i) => (
+            <div className="field" key={label}>
+              <label htmlFor={`tier-${i}`}>{label} (%)</label>
+              <input
+                id={`tier-${i}`}
+                type="number"
+                min={0}
+                max={100}
+                value={game.percentByOrders[i]}
+                onChange={(e) => {
+                  const next = [...game.percentByOrders];
+                  next[i] = Number(e.target.value);
+                  setGame({ percentByOrders: next });
+                }}
+              />
+            </div>
+          ))}
+        </div>
+        <div className="field-row">
+          <div className="field">
+            <label htmlFor="game-perfect">Flawless run (%)</label>
+            <input id="game-perfect" type="number" min={0} max={100} value={game.perfectPercent} onChange={(e) => setGame({ perfectPercent: Number(e.target.value) })} />
+          </div>
+          <div className="field">
+            <label htmlFor="game-left">Flawless needs this many seconds left</label>
+            <input id="game-left" type="number" min={0} max={45} value={game.perfectMinTimeLeft} onChange={(e) => setGame({ perfectMinTimeLeft: Number(e.target.value) })} />
+          </div>
+        </div>
+        <div className="field-row">
+          <div className="field">
+            <label htmlFor="game-max">Most a discount can take off (₦)</label>
+            <input id="game-max" type="number" min={0} step={500} value={game.maxDiscount} onChange={(e) => setGame({ maxDiscount: Number(e.target.value) })} />
+          </div>
+          <div className="field">
+            <label htmlFor="game-days">Discount lasts (days)</label>
+            <input id="game-days" type="number" min={1} max={90} value={game.validDays} onChange={(e) => setGame({ validDays: Number(e.target.value) })} />
+          </div>
         </div>
       </section>
 
