@@ -18,7 +18,7 @@ export default function AdminLogin() {
     setError('');
     try {
       await api.admin.login(email, password);
-      navigate('/admin', { replace: true });
+      navigate('/', { replace: true });
     } catch (err) {
       setError(err.message);
     } finally {

@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Link, NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom';
 import { api } from '../api/index.js';
 import { formatNaira } from '../lib/format.js';
 import { LiveProvider, useLive } from './live.jsx';
 import OrderDrawer from './OrderDrawer.jsx';
 import logo from '../assets/logo.webp';
 import './admin.css';
+
+const SHOP_URL = import.meta.env.VITE_SHOP_URL || '/';
 
 const icons = {
   dashboard: 'M4 13h6V4H4v9Zm0 7h6v-5H4v5Zm10 0h6v-9h-6v9Zm0-16v5h6V4h-6Z',
@@ -61,19 +63,19 @@ function Shell({ me }) {
           <span>Kitchen</span>
         </div>
         <nav className="admin-nav" aria-label="Admin">
-          <NavLink to="/admin" end>
+          <NavLink to="/" end>
             <Icon name="dashboard" />
             <span>Dashboard</span>
           </NavLink>
-          <NavLink to="/admin/orders">
+          <NavLink to="/orders">
             <Icon name="orders" />
             <span>Orders</span>
           </NavLink>
-          <NavLink to="/admin/payments">
+          <NavLink to="/payments">
             <Icon name="payments" />
             <span>Payments</span>
           </NavLink>
-          <NavLink to="/admin/settings">
+          <NavLink to="/settings">
             <Icon name="settings" />
             <span>Settings</span>
           </NavLink>
@@ -85,7 +87,7 @@ function Shell({ me }) {
             className="text-btn small"
             onClick={() => {
               api.admin.logout();
-              navigate('/admin/login');
+              navigate('/login');
             }}
           >
             Log out
@@ -104,9 +106,9 @@ function Shell({ me }) {
             <input type="checkbox" checked={sound} onChange={(e) => setSound(e.target.checked)} />
             <span>Order sound</span>
           </label>
-          <Link className="text-btn small view-shop" to="/">
+          <a className="text-btn small view-shop" href={SHOP_URL} target="_blank" rel="noopener noreferrer">
             View shop
-          </Link>
+          </a>
         </header>
         {api.mode === 'demo' && <p className="demo-note">Demo mode: sample orders, nothing is saved to a real database. A new test order arrives about every 45 seconds.</p>}
         <main className="admin-content">
@@ -138,7 +140,7 @@ export default function AdminLayout() {
       });
   }, [state]);
 
-  if (state === 'out') return <Navigate to="/admin/login" replace />;
+  if (state === 'out') return <Navigate to="/login" replace />;
   if (state === 'checking') return <div className="admin-loading">Opening the kitchen…</div>;
   return (
     <LiveProvider>

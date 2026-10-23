@@ -9,12 +9,6 @@ import Shop from './pages/Shop.jsx';
 import Checkout from './pages/Checkout.jsx';
 import OrderPage from './pages/OrderPage.jsx';
 import TrackLookup from './pages/TrackLookup.jsx';
-import AdminLayout from './admin/AdminLayout.jsx';
-import AdminLogin from './admin/AdminLogin.jsx';
-import Dashboard from './admin/Dashboard.jsx';
-import OrdersBoard from './admin/OrdersBoard.jsx';
-import Payments from './admin/Payments.jsx';
-import Settings from './admin/Settings.jsx';
 
 function ShopLayout() {
   const location = useLocation();
@@ -52,13 +46,6 @@ export default function App() {
             <Route path="order/:token" element={<OrderPage />} />
             <Route path="track" element={<TrackLookup />} />
             <Route path="*" element={<Shop />} />
-          </Route>
-          <Route path="admin/login" element={<AdminLogin />} />
-          <Route path="admin" element={<AdminLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="orders" element={<OrdersBoard />} />
-            <Route path="payments" element={<Payments />} />
-            <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>
       </MenuProvider>

@@ -80,7 +80,8 @@ export default function OrderDrawer({ id, onClose }) {
   const s = order?.summary;
   const next = s && nextStatus(s.status, s.fulfilment);
   const awaiting = s && (s.status === 'PAYMENT_REVIEW' || s.status === 'AWAITING_PAYMENT');
-  const trackUrl = order ? `${window.location.origin}/order/${order.trackingToken}` : '';
+  const shop = (import.meta.env.VITE_SHOP_URL || window.location.origin).replace(/\/$/, '');
+  const trackUrl = order ? `${shop}/order/${order.trackingToken}` : '';
 
   return (
     <div className="drawer-root" role="dialog" aria-modal="true" aria-label="Order details">

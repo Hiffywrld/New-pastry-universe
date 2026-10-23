@@ -8,7 +8,7 @@ The online shop and kitchen dashboard for Pastry Universe: premium banana bread,
 ## What's inside
 
 ```
-frontend/   React + Vite shop and admin
+frontend/   React + Vite: the shop (index.html) and the kitchen admin (admin/index.html), built as two separate apps
 backend/    Spring Boot 3 (Java 21) API, PostgreSQL, Flyway migrations
 docs/       Roadmap
 docker-compose.yml   Local database + API
@@ -83,6 +83,8 @@ The tests place an order, upload a receipt, log in as staff, confirm the payment
 3. Add her domain under Project → Settings → Domains.
 
 Then open `/admin`, log in, and put her bank details in **Settings** before sharing the link.
+
+The kitchen is its own app at `/admin`, so the shop never loads any admin code. To give it its own address (e.g. `admin.pastryuniverse.ng`), add that domain to the same Vercel project and redirect it to `/admin`.
 
 ## Product photos
 

@@ -216,12 +216,12 @@ export default function Dashboard() {
           <p className="kpi-label">Orders today</p>
           <p className="kpi-value num">{k.ordersToday}</p>
         </div>
-        <Link to="/admin/payments" className={`kpi kpi-link${k.awaitingReview ? ' needs-you' : ''}`}>
+        <Link to="/payments" className={`kpi kpi-link${k.awaitingReview ? ' needs-you' : ''}`}>
           <p className="kpi-label">Payments to check</p>
           <p className="kpi-value num">{k.awaitingReview}</p>
           <p className="kpi-delta">{k.awaitingPayment} waiting for transfer</p>
         </Link>
-        <Link to="/admin/orders" className="kpi kpi-link">
+        <Link to="/orders" className="kpi kpi-link">
           <p className="kpi-label">Due tomorrow</p>
           <p className="kpi-value num">{k.dueTomorrow}</p>
           <p className="kpi-delta">orders to bake</p>
@@ -243,7 +243,7 @@ export default function Dashboard() {
         <section className="card">
           <div className="card-head">
             <h2>Latest orders</h2>
-            <Link to="/admin/orders" className="text-btn small">
+            <Link to="/orders" className="text-btn small">
               All orders
             </Link>
           </div>

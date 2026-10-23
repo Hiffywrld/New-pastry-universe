@@ -1919,3 +1919,429 @@ body::before {
     flex: 1;
   }
 }
+
+/* ---------- Menu cards ---------- */
+.cat-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 20px;
+  scrollbar-width: none;
+}
+.cat-row::-webkit-scrollbar {
+  display: none;
+}
+.cat-row button {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font: 500 15px/1 var(--font-display);
+  cursor: pointer;
+}
+.cat-row button[aria-pressed='true'] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+.cat-count {
+  font-size: 12px;
+  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
+}
+.menu-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.menu-card-wrap {
+  animation: card-in 0.5s var(--ease) both;
+  animation-delay: calc(var(--i) * 45ms);
+}
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+.menu-card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  text-align: left;
+  font: inherit;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+  -webkit-tap-highlight-color: transparent;
+}
+.menu-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px -12px rgba(60, 40, 20, 0.28);
+}
+.menu-card:active {
+  transform: scale(0.98);
+}
+.menu-card.is-out {
+  opacity: 0.6;
+}
+.menu-card-art {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  aspect-ratio: 5 / 4;
+  padding: 22px 22px 24px;
+  background: linear-gradient(180deg, var(--case-top), var(--case-bottom));
+}
+.menu-card-art::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 16px;
+  background: linear-gradient(180deg, var(--shelf-top), var(--shelf-front));
+}
+.menu-card-art img {
+  position: relative;
+  z-index: 1;
+  max-width: 100%;
+  max-height: 100%;
+  filter: drop-shadow(0 8px 10px rgba(40, 25, 10, 0.22));
+  transition: transform 0.45s var(--ease);
+}
+.menu-card-art img.photo {
+  border-radius: 12px;
+}
+.menu-card:hover .menu-card-art img {
+  transform: translateY(-6px) scale(1.03);
+}
+.menu-card-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  margin: 0;
+  z-index: 2;
+}
+.menu-card-sticker {
+  position: absolute;
+  right: 10px;
+  bottom: 2px;
+  z-index: 2;
+  transform: rotate(-8deg);
+  transition: transform 0.4s var(--ease);
+}
+.menu-card:hover .menu-card-sticker {
+  transform: rotate(6deg) scale(1.08);
+}
+.menu-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px 18px;
+}
+.menu-card-name {
+  font: 600 19px/1.2 var(--font-display);
+}
+
+/* ---------- Product sheet ---------- */
+.sheet-root {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+}
+.sheet-scrim {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(20, 16, 14, 0.5);
+  cursor: pointer;
+}
+.sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: calc(100% - 36px - env(safe-area-inset-top, 0px));
+  display: flex;
+  flex-direction: column;
+  border-radius: 26px 26px 0 0;
+  background: var(--paper);
+  box-shadow: 0 -16px 50px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  outline: none;
+  view-transition-name: pu-sheet;
+  transition: transform 0.35s var(--ease);
+}
+.sheet-hero {
+  position: relative;
+  flex: none;
+  height: 270px;
+  background: linear-gradient(180deg, var(--case-top), var(--case-bottom));
+  touch-action: none;
+}
+.sheet-handle {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  width: 44px;
+  height: 5px;
+  margin-left: -22px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 3;
+}
+.sheet-close {
+  position: absolute;
+  top: 14px;
+  right: max(14px, env(safe-area-inset-right, 0px));
+  z-index: 3;
+  background: var(--surface);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+.sheet-stage {
+  position: absolute;
+  inset: 40px 28px 36px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 2;
+}
+.sheet-photo {
+  max-width: 100%;
+  max-height: 100%;
+  transform-origin: 50% 100%;
+  filter: drop-shadow(0 12px 14px rgba(40, 25, 10, 0.25));
+  transition: transform 0.6s var(--ease);
+  animation: piece-in 0.4s var(--ease);
+}
+.sheet-photo.photo {
+  border-radius: 14px;
+}
+.sheet-shelf {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 22px;
+  height: 16px;
+  z-index: 1;
+  background: linear-gradient(180deg, var(--shelf-top), var(--shelf-front));
+}
+.sheet-shelf::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 22px;
+  background: linear-gradient(180deg, var(--shelf-under), transparent);
+}
+.sheet-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px max(20px, env(safe-area-inset-right, 0px)) 20px max(20px, env(safe-area-inset-left, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  overscroll-behavior: contain;
+}
+.sheet-name {
+  font-size: clamp(28px, 4vw, 38px);
+  font-weight: 700;
+  margin-top: -10px;
+}
+.sheet-body .details-desc {
+  margin-top: -8px;
+}
+.seg-price {
+  display: block;
+  font-size: 12px;
+  opacity: 0.65;
+  margin-top: 2px;
+  font-variant-numeric: tabular-nums;
+}
+.sheet-foot {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px max(20px, env(safe-area-inset-right, 0px)) calc(14px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px));
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+}
+.sheet-add {
+  flex: 1;
+  justify-content: space-between;
+}
+.sheet-added {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  color: var(--good);
+  animation: fade-in 0.3s;
+}
+.sheet-added .btn-row {
+  flex: 1;
+  justify-content: flex-end;
+}
+
+/* Opening and closing without view transitions */
+.sheet-root.animate-in .sheet {
+  animation: sheet-in 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.sheet-root.animate-in .sheet-scrim {
+  animation: fade-in 0.3s;
+}
+.sheet-root.is-closing .sheet {
+  animation: sheet-out 0.3s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+.sheet-root.is-closing .sheet-scrim {
+  animation: fade-out 0.3s forwards;
+}
+@keyframes sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes sheet-out {
+  to {
+    transform: translateY(100%);
+  }
+}
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+}
+@keyframes modal-out {
+  to {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+}
+
+/* With view transitions, the photo morphs from the card and the sheet slides */
+::view-transition-group(*) {
+  animation-duration: 0.5s;
+  animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.28s;
+}
+::view-transition-new(pu-sheet) {
+  animation: sheet-in 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+}
+::view-transition-old(pu-sheet) {
+  animation: sheet-out 0.32s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@media (min-width: 721px) {
+  .sheet-root {
+    display: grid;
+    place-items: center;
+    padding: 32px max(24px, env(safe-area-inset-right, 0px)) 32px max(24px, env(safe-area-inset-left, 0px));
+  }
+  .sheet {
+    position: relative;
+    width: min(940px, 100%);
+    height: min(600px, 100%);
+    max-height: none;
+    border-radius: 28px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-areas: 'hero body' 'hero foot';
+  }
+  .sheet-hero {
+    grid-area: hero;
+    height: auto;
+    touch-action: auto;
+  }
+  .sheet-handle {
+    display: none;
+  }
+  .sheet-close {
+    left: 16px;
+    right: auto;
+  }
+  .sheet-stage {
+    inset: 56px 40px 60px;
+  }
+  .sheet-shelf {
+    bottom: 44px;
+  }
+  .sheet-body {
+    grid-area: body;
+    padding: 36px 32px 20px;
+  }
+  .sheet-name {
+    margin-top: -6px;
+  }
+  .sheet-foot {
+    grid-area: foot;
+    padding: 16px 32px 22px;
+  }
+  .sheet-root.animate-in .sheet {
+    animation-name: modal-in;
+  }
+  .sheet-root.is-closing .sheet {
+    animation-name: modal-out;
+  }
+  ::view-transition-new(pu-sheet) {
+    animation-name: modal-in;
+  }
+  ::view-transition-old(pu-sheet) {
+    animation-name: modal-out;
+  }
+}
+
+@media (max-width: 860px) {
+  .menu-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+}
+@media (max-width: 560px) {
+  .menu-card-art {
+    padding: 16px 14px 20px;
+  }
+  .menu-card-body {
+    padding: 10px 12px 14px;
+  }
+  .menu-card-name {
+    font-size: 16px;
+  }
+  .menu-card-sticker {
+    --s: 40px;
+  }
+  .menu-card-sticker .sticker-main {
+    font-size: 11px;
+  }
+  .sheet-hero {
+    height: 240px;
+  }
+}

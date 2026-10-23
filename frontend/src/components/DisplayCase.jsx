@@ -3,6 +3,7 @@ import { artFor, defaultSizeKey } from '../menu/art.js';
 import { formatNaira, formatShort } from '../lib/format.js';
 import Sticker from './Sticker.jsx';
 import { track } from '../lib/analytics.js';
+import { flyToCart } from '../lib/motion.js';
 
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
@@ -100,6 +101,7 @@ export default function DisplayCase({ items, active, open, picks, onActive, onOp
       { variantId: choice.variantId, slug: item.id, name: item.name, size: size.label, option: choice.label, price: choice.price },
       qty,
     );
+    flyToCart(boxRef.current?.querySelector('.slot.is-focus img'));
     setAdded(true);
   };
 

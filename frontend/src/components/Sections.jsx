@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { BRAND } from '../brand.js';
-import { artFor, defaultSizeKey } from '../menu/art.js';
-import { formatNaira, formatRange } from '../lib/format.js';
+import { formatNaira } from '../lib/format.js';
+import { MenuCard } from './ProductSheet.jsx';
 import { useCart } from '../state/cart.jsx';
 import logo from '../assets/logo.webp';
 
@@ -107,61 +107,36 @@ export function Ticker({ lines }) {
   );
 }
 
-export function MenuBoard({ items, onView }) {
+export function MenuBoard({ items, openId, onOpen }) {
+  const [cat, setCat] = useState('All');
   const cats = useMemo(() => {
     const present = [...new Set(items.map((i) => i.category))];
     return [...CATEGORY_ORDER.filter((c) => present.includes(c)), ...present.filter((c) => !CATEGORY_ORDER.includes(c))];
   }, [items]);
+  const shown = cat === 'All' ? items : items.filter((i) => i.category === cat);
 
   return (
     <section id="menu" className="section menu">
       <div className="wrap">
         <div className="section-head">
           <h2>The full menu</h2>
-          <p>Every size and price. Tap a size to see it in the case and add it to your cart.</p>
+          <p>Tap a treat to pick a size and topping.</p>
         </div>
-        {cats.map((cat) => (
-          <div className="menu-cat" key={cat}>
-            <h3>{cat}</h3>
-            <div className="menu-grid">
-              {items
-                .filter((i) => i.category === cat)
-                .map((item) => {
-                  const art = artFor(item, defaultSizeKey(item));
-                  return (
-                    <article className="menu-item" key={item.id}>
-                      <button
-                        type="button"
-                        className="menu-thumb"
-                        onClick={() => onView(item.id)}
-                        aria-label={`See ${item.name} in the display case`}
-                      >
-                        {art.src && <img src={art.src} alt="" loading="lazy" className={art.cutout ? '' : 'photo'} />}
-                      </button>
-                      <div className="menu-body">
-                        <h4>
-                          {item.name}
-                          {item.tag && <span className="tag">{item.tag}</span>}
-                        </h4>
-                        <p className="menu-desc">{item.description}</p>
-                        <ul className="prices">
-                          {item.sizes.map((s) => (
-                            <li key={s.key} className={s.inStock ? '' : 'is-out'}>
-                              <button type="button" onClick={() => onView(item.id, s.key)} disabled={!s.inStock}>
-                                <span>{s.key === 'regular' ? 'Price' : s.label}</span>
-                                <span className="leader" aria-hidden="true" />
-                                <span className="num">{s.inStock ? formatRange(s.priceMin, s.priceMax) : 'Sold out'}</span>
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </article>
-                  );
-                })}
+        <div className="cat-row" role="radiogroup" aria-label="Category">
+          {['All', ...cats].map((c) => (
+            <button type="button" key={c} aria-pressed={cat === c} onClick={() => setCat(c)}>
+              {c}
+              <span className="cat-count">{c === 'All' ? items.length : items.filter((i) => i.category === c).length}</span>
+            </button>
+          ))}
+        </div>
+        <div className="menu-cards" key={cat}>
+          {shown.map((item, i) => (
+            <div className="menu-card-wrap" style={{ '--i': i }} key={item.id}>
+              <MenuCard item={item} hidePhoto={openId === item.id} onOpen={onOpen} />
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -311,7 +286,6 @@ export function Footer({ store }) {
         <p>
           © {year} {BRAND.name}
         </p>
-        <Link to="/admin">Staff</Link>
       </div>
     </footer>
   );
