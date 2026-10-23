@@ -1,0 +1,42 @@
+# Local development: database + API.
+#   cp .env.example .env   (then edit the values)
+#   docker compose up --build
+# The shop runs separately: cd frontend && npm run dev
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: pastry
+      POSTGRES_USER: pastry
+      POSTGRES_PASSWORD: pastry
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pastry"]
+      interval: 5s
+      retries: 10
+
+  api:
+    build: ./backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: jdbc:postgresql://db:5432/pastry
+      DATABASE_USER: pastry
+      DATABASE_PASSWORD: pastry
+      JWT_SECRET: ${JWT_SECRET}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      ADMIN_NAME: ${ADMIN_NAME:-Owner}
+      APP_CORS_ORIGINS: http://localhost:5173,http://localhost:4173
+    ports:
+      - "8080:8080"
+    volumes:
+      - uploads:/data/uploads
+
+volumes:
+  db-data:
+  uploads:

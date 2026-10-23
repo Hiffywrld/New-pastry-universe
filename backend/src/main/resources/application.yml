@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: pastry-universe-api
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/pastry}
+    username: ${DATABASE_USER:pastry}
+    password: ${DATABASE_PASSWORD:pastry}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc.time_zone: UTC
+  flyway:
+    enabled: true
+  servlet:
+    multipart:
+      max-file-size: 8MB
+      max-request-size: 9MB
+  mvc:
+    async:
+      request-timeout: -1
+  jackson:
+    default-property-inclusion: non_null
+
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: framework
+  compression:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+app:
+  # Shown in timestamps and used for "today" on the dashboard.
+  timezone: Africa/Lagos
+  # Comma-separated list of sites allowed to call the API from a browser.
+  cors-origins: ${APP_CORS_ORIGINS:http://localhost:5173,http://localhost:4173}
+  # Secret used to sign staff login tokens. Set a long random value in production.
+  jwt-secret: ${JWT_SECRET:}
+  jwt-hours: 12
+  # Where uploaded payment receipts are stored.
+  upload-dir: ${UPLOAD_DIR:./data/uploads}
+  # The first owner account, created on startup if there are no staff yet.
+  bootstrap-admin:
+    email: ${ADMIN_EMAIL:}
+    password: ${ADMIN_PASSWORD:}
+    name: ${ADMIN_NAME:Owner}
