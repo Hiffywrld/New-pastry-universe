@@ -258,14 +258,6 @@ export function Footer() {
         <p>
           © {year} {BRAND.name}
         </p>
-        {BRAND.credit && (
-          <p>
-            Site by{' '}
-            <a href={BRAND.credit.url} {...external}>
-              {BRAND.credit.label}
-            </a>
-          </p>
-        )}
       </div>
     </footer>
   );

@@ -11,7 +11,6 @@ export const BRAND = {
   email: 'pastryuniversee@gmail.com',
   instagram: 'pastryuniverse',
   address: '8b Adefeyisan Street, Olawaiye Estate, Olowora, Lagos',
-  credit: { label: 'Hiffy', url: 'https://github.com/hiffywrld' },
 };
 
 // The scrolling band under the display case.
