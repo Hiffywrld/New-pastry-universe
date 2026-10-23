@@ -215,6 +215,14 @@ p {
 }
 
 /* Header */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  z-index: 30;
+  background: var(--nav-bg);
+}
 .site-header {
   position: sticky;
   top: env(safe-area-inset-top, 0px);
