@@ -1,23 +1,30 @@
-import { useEffect, useState } from 'react';
-import snapshot from './snapshot.json';
-import { LIVE_MENU_URL } from '../config.js';
+import { createContext, createElement, useCallback, useContext, useEffect, useState } from 'react';
+import { api } from '../api/index.js';
+import { useCart } from '../state/cart.jsx';
 
-// Starts with the bundled backup so the page renders instantly,
-// then swaps in the live Bumpa menu when it arrives.
-export function useMenu() {
-  const [menu, setMenu] = useState(snapshot);
+const MenuContext = createContext(null);
+
+// Loads the menu once and shares it with every page.
+export function MenuProvider({ children }) {
+  const [state, setState] = useState({ menu: null, error: null });
+  const { sync } = useCart();
+
+  const load = useCallback(() => {
+    setState((s) => ({ ...s, error: null }));
+    api
+      .menu()
+      .then((menu) => {
+        setState({ menu, error: null });
+        sync(menu);
+      })
+      .catch((error) => setState({ menu: null, error }));
+  }, [sync]);
 
   useEffect(() => {
-    if (!LIVE_MENU_URL) return;
-    const ctrl = new AbortController();
-    fetch(LIVE_MENU_URL, { signal: ctrl.signal })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((live) => {
-        if (live && Array.isArray(live.items) && live.items.length) setMenu(live);
-      })
-      .catch(() => {});
-    return () => ctrl.abort();
-  }, []);
+    load();
+  }, [load]);
 
-  return menu;
+  return createElement(MenuContext.Provider, { value: { ...state, reload: load } }, children);
 }
+
+export const useMenu = () => useContext(MenuContext);

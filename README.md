@@ -1,54 +1,93 @@
 # Pastry Universe
 
-The website for [Pastry Universe](https://pastryuniverse.bumpa.shop): premium banana bread, cakes and chin-chin from Lagos.
+The online shop and kitchen dashboard for Pastry Universe: premium banana bread, cakes and chin-chin in Lagos.
 
-Treats sit in a glass display case. Click one and it glides to the centre while the rest blur back, then pick a size (the loaf grows on the shelf), choose a topping or flavour and order it on Bumpa.
+- **Shop:** treats sit in a glass display case. Open one, pick a size and topping, and add it to the cart. Checkout handles delivery (fee by area) or free pickup, a delivery date and time, and gift notes. Customers pay by bank transfer, upload their receipt, and follow their order live.
+- **Kitchen (admin):** a live dashboard (sales, orders, visitors on the site right now, revenue trend, best sellers, top areas, shopper funnel), an orders board you drag from "To bake" to "Delivered", a payments list for checking receipts, and settings for bank details, opening days, time slots and the shop front.
 
-## How the menu stays up to date
+## What's inside
 
-The site reads the menu straight from the Bumpa store, so there is nothing to update here when a price, topping or stock level changes. Update Bumpa as usual and the site follows within about 5 minutes.
-
-- `api/menu.js` is a Vercel serverless function. It fetches Bumpa's product and delivery data and returns it at `/api/menu`, cached for 5 minutes.
-- `src/menu/fromBumpa.js` groups Bumpa products into the items on the shelf (for example, "Banana Bread- Mini" and "Banana Bread- Large" become one Banana Bread with two sizes).
-- `src/menu/families.js` lists those groups, their order on the shelf, and the descriptions shown on the site. A brand-new Bumpa product that doesn't match any group still appears, under "More treats".
-- `src/menu/snapshot.json` is a bundled backup copy, used when Bumpa can't be reached. Refresh it with `npm run snapshot`.
-
-## Run it locally
-
-```bash
-npm install
-npm run dev
+```
+frontend/   React + Vite shop and admin
+backend/    Spring Boot 3 (Java 21) API, PostgreSQL, Flyway migrations
+docs/       Roadmap
+docker-compose.yml   Local database + API
 ```
 
-`npm run dev` doesn't run the `/api/menu` function, so the local site uses the backup menu. To run the function locally as well, use `npx vercel dev`.
+## Run it on your computer
 
-## Deploy (Vercel, free)
+You need Docker, Node 20+ and (optionally) Java 21.
 
-1. Push this repo to GitHub.
-2. Go to [vercel.com](https://vercel.com), choose **Add New → Project** and import the repo. Vercel detects Vite automatically. No settings need changing.
-3. Every push to `main` redeploys the site.
-4. To use a custom domain, add it under **Project → Settings → Domains**.
+```bash
+# 1. Database + API
+cp .env.example .env          # set ADMIN_EMAIL, ADMIN_PASSWORD, JWT_SECRET
+docker compose up --build     # API on http://localhost:8080
 
-## Editing
+# 2. Shop
+cd frontend
+npm install
+npm run dev                   # http://localhost:5173  (calls the API through /api)
+```
 
-| What | Where |
+Log in to the kitchen at `http://localhost:5173/admin` with the `ADMIN_EMAIL` and `ADMIN_PASSWORD` from your `.env`. The owner account is created the first time the API starts.
+
+Without Docker, start Postgres yourself, create a `pastry` database and user, then run `cd backend && ./gradlew bootRun`.
+
+### Tests
+
+```bash
+cd backend && ./gradlew test   # needs Postgres; uses the pastry_test database
+```
+
+The tests place an order, upload a receipt, log in as staff, confirm the payment, move the order to baking and check the dashboard.
+
+## How it works
+
+- **Menu:** products and their variants (size + topping, each with a price and in-stock flag) live in Postgres. The first migration seeds her current menu and the 27 Lagos delivery zones.
+- **Prices are worked out on the server.** The browser only sends which variants and how many, so nobody can edit a price before paying.
+- **Payment flow:** an order starts as *Not paid yet*. When the customer uploads a receipt it moves to *Check payment*. Staff tap *Payment received* (or *Payment not found* with a note), and the customer's page updates instantly.
+- **Live updates** use Server-Sent Events: `/api/orders/track/{token}/stream` for customers and `/api/admin/stream` for the kitchen. The admin gets a toast (and an optional sound) for every new order and receipt.
+- **Analytics** are anonymous: a random id per browser tab and no cookies. Page views, treats opened, add to cart and checkout starts feed the shopper funnel, and heartbeats power "on the site now".
+- **Staff login** uses signed tokens (JWT, 12 hours). Only the owner can change settings.
+
+### Main API routes
+
+| Route | What it does |
 | --- | --- |
-| Phone, WhatsApp, email, Instagram, address, tagline | `src/config.js` |
-| Words in the orange ticker | `TICKER` in `src/config.js` |
-| Item names, descriptions, tags, shelf order | `src/menu/families.js` |
-| Which photo shows for each item or size | `src/menu/art.js` |
-| Colours and fonts | top of `src/styles.css` |
+| `GET /api/menu` | Products, sizes, toppings, delivery zones, dates and time slots |
+| `POST /api/orders` | Place an order |
+| `GET /api/orders/track/{token}` | Order status for the customer |
+| `POST /api/orders/track/{token}/receipt` | Upload a transfer receipt |
+| `POST /api/orders/lookup` | Find an order by code + phone |
+| `POST /api/admin/auth/login` | Staff login |
+| `GET /api/admin/dashboard` | Dashboard numbers |
+| `GET /api/admin/orders` | Orders board |
+| `POST /api/admin/orders/{id}/payment/confirm` | Confirm a payment |
+| `POST /api/admin/orders/{id}/status` | Move an order along |
+| `GET/PUT /api/admin/settings` | Store settings |
+
+## Going live
+
+**API + database**
+1. Create a Postgres database. Neon or Supabase both have free plans.
+2. Deploy `backend/` with its Dockerfile to Railway, Render or Fly.io, using an always-on instance so live updates stay connected. Set:
+   - `DATABASE_URL` (JDBC form, e.g. `jdbc:postgresql://host:5432/db?sslmode=require`), `DATABASE_USER`, `DATABASE_PASSWORD`
+   - `JWT_SECRET`: a long random string
+   - `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `ADMIN_NAME`: the first owner account
+   - `APP_CORS_ORIGINS`: your shop's address, e.g. `https://pastryuniverse.ng`
+   - `UPLOAD_DIR`: a mounted volume (default `/data/uploads`) so receipts survive restarts
+
+**Shop**
+1. Import the repo into Vercel and set the root directory to `frontend`.
+2. Set `VITE_API_URL` to the API's address, e.g. `https://api.pastryuniverse.ng`.
+3. Add her domain under Project → Settings → Domains.
+
+Then open `/admin`, log in, and put her bank details in **Settings** before sharing the link.
 
 ## Product photos
 
-The display case uses cut-out photos (transparent background) in `src/assets/cutouts/`. The current ones were cut from the Bumpa photos. Items without a cut-out fall back to their Bumpa photo.
+The display case uses cut-out photos in `frontend/src/assets/cutouts/`, mapped to products and sizes in `frontend/src/menu/art.js`. For cleaner cut-outs, shoot each item on a plain light background in daylight, from the same angle, with no hands in the shot.
 
-For sharper cut-outs next time:
+## Clickable demo
 
-- Shoot every item from the same angle, slightly above, with the phone held level.
-- Use a plain background that contrasts with the bread, like a white or light grey board. Avoid marble and patterned surfaces.
-- Keep the whole item in frame with space around it. No hands or gloves in the shot.
-- Use daylight from a window, not the kitchen bulb, and avoid harsh shadows.
-- One item per photo. Take the same shot for every size so they line up on the shelf.
-
-To add one, export it as a transparent `.webp` (around 800px tall), drop it in `src/assets/cutouts/`, and reference its file name in `src/menu/art.js`.
+`VITE_MOCK=1` builds the frontend with a pretend backend that runs in the browser, with sample orders, so the whole shop and kitchen can be clicked through without a server. The real site never includes it.

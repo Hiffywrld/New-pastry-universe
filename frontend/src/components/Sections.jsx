@@ -1,30 +1,76 @@
 import { useMemo, useState } from 'react';
-import { BRAND, TICKER } from '../config.js';
-import { CATEGORIES } from '../menu/families.js';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { BRAND } from '../brand.js';
 import { artFor, defaultSizeKey } from '../menu/art.js';
 import { formatNaira, formatRange } from '../lib/format.js';
+import { useCart } from '../state/cart.jsx';
 import logo from '../assets/logo.webp';
 
 const external = { target: '_blank', rel: 'noopener noreferrer' };
+const CATEGORY_ORDER = ['Banana bread', 'Cakes', 'Gift boxes', 'Chin-chin'];
 
-export function Header() {
+const BagIcon = () => (
+  <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+    <path d="M6 8h12l-1 12H7L6 8Z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+    <path d="M9 8V6a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+  </svg>
+);
+
+function SectionLink({ id, children }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const go = (e) => {
+    e.preventDefault();
+    const scroll = () => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (location.pathname === '/') scroll();
+    else {
+      navigate('/');
+      setTimeout(scroll, 120);
+    }
+  };
+  return (
+    <a href={`#${id}`} onClick={go}>
+      {children}
+    </a>
+  );
+}
+
+export function Header({ simple = false }) {
+  const { count, setOpen, bump } = useCart();
   return (
     <header className="site-header">
       <div className="wrap header-row">
-        <a href="#top" className="brand">
+        <Link to="/" className="brand">
           <img src={logo} alt="" width="44" height="44" />
           <span>{BRAND.name}</span>
-        </a>
-        <nav aria-label="Main" className="nav">
-          <a href="#menu">Menu</a>
-          <a href="#delivery">Delivery</a>
-          <a href="#contact">Contact</a>
-        </nav>
-        <a className="btn btn-primary btn-sm" href={BRAND.storeUrl} {...external}>
-          Shop on Bumpa
-        </a>
+        </Link>
+        {!simple && (
+          <nav aria-label="Main" className="nav">
+            <SectionLink id="menu">Menu</SectionLink>
+            <SectionLink id="delivery">Delivery</SectionLink>
+            <Link to="/track">Track order</Link>
+          </nav>
+        )}
+        <button type="button" className="cart-btn" onClick={() => setOpen(true)} aria-label={`Cart, ${count} items`}>
+          <BagIcon />
+          <span>Cart</span>
+          {count > 0 && (
+            <span className="cart-count" key={bump}>
+              {count}
+            </span>
+          )}
+        </button>
       </div>
     </header>
+  );
+}
+
+export function Announcement({ text }) {
+  if (!text) return null;
+  return (
+    <div className="announcement">
+      <p className="wrap">{text}</p>
+    </div>
   );
 }
 
@@ -39,11 +85,12 @@ export function Intro() {
   );
 }
 
-export function Ticker() {
+export function Ticker({ lines }) {
+  if (!lines?.length) return null;
   const run = (hidden) => (
     <div className="ticker-run" aria-hidden={hidden || undefined}>
-      {TICKER.map((t) => (
-        <span key={t} className="ticker-item">
+      {lines.map((t, i) => (
+        <span key={`${t}-${i}`} className="ticker-item">
           {t}
           <i className="ticker-dot" />
         </span>
@@ -51,7 +98,7 @@ export function Ticker() {
     </div>
   );
   return (
-    <div className="ticker" role="marquee" aria-label={TICKER.join('. ')}>
+    <div className="ticker" role="marquee" aria-label={lines.join('. ')}>
       <div className="ticker-track">
         {run(false)}
         {run(true)}
@@ -63,7 +110,7 @@ export function Ticker() {
 export function MenuBoard({ items, onView }) {
   const cats = useMemo(() => {
     const present = [...new Set(items.map((i) => i.category))];
-    return [...CATEGORIES.filter((c) => present.includes(c)), ...present.filter((c) => !CATEGORIES.includes(c))];
+    return [...CATEGORY_ORDER.filter((c) => present.includes(c)), ...present.filter((c) => !CATEGORY_ORDER.includes(c))];
   }, [items]);
 
   return (
@@ -71,7 +118,7 @@ export function MenuBoard({ items, onView }) {
       <div className="wrap">
         <div className="section-head">
           <h2>The full menu</h2>
-          <p>Every size and price, straight from our Bumpa store. Tap a size to order it.</p>
+          <p>Every size and price. Tap a size to see it in the case and add it to your cart.</p>
         </div>
         {cats.map((cat) => (
           <div className="menu-cat" key={cat}>
@@ -100,17 +147,14 @@ export function MenuBoard({ items, onView }) {
                         <ul className="prices">
                           {item.sizes.map((s) => (
                             <li key={s.key} className={s.inStock ? '' : 'is-out'}>
-                              <a href={s.url} {...external}>
+                              <button type="button" onClick={() => onView(item.id, s.key)} disabled={!s.inStock}>
                                 <span>{s.key === 'regular' ? 'Price' : s.label}</span>
                                 <span className="leader" aria-hidden="true" />
                                 <span className="num">{s.inStock ? formatRange(s.priceMin, s.priceMax) : 'Sold out'}</span>
-                              </a>
+                              </button>
                             </li>
                           ))}
                         </ul>
-                        <button type="button" className="text-btn" onClick={() => onView(item.id)}>
-                          See it in the case
-                        </button>
                       </div>
                     </article>
                   );
@@ -123,42 +167,40 @@ export function MenuBoard({ items, onView }) {
   );
 }
 
-export function Delivery({ delivery }) {
+export function Delivery({ delivery, store }) {
   const [q, setQ] = useState('');
   const zones = delivery?.zones || [];
   const term = q.trim().toLowerCase();
-  const shown = term
-    ? zones.filter((z) => `${z.name} ${z.areas}`.toLowerCase().includes(term))
-    : zones;
+  const shown = term ? zones.filter((z) => `${z.name} ${z.areas}`.toLowerCase().includes(term)) : zones;
 
   return (
     <section id="delivery" className="section delivery">
       <div className="wrap">
         <div className="section-head">
           <h2>Delivery across Lagos</h2>
-          <p>Order on Bumpa and pick your area at checkout. Here is what delivery costs.</p>
+          <p>Pick your area at checkout and the fee is added for you. Or pick up for free.</p>
         </div>
 
         <ol className="steps">
           <li>
             <span className="step-num">1</span>
             <div>
-              <h3>Pick your treats</h3>
-              <p>Browse the case or the menu and choose a size.</p>
+              <h3>Fill your cart</h3>
+              <p>Choose sizes and toppings from the case or the menu.</p>
             </div>
           </li>
           <li>
             <span className="step-num">2</span>
             <div>
-              <h3>Check out on Bumpa</h3>
-              <p>Choose toppings, add delivery or pickup, and pay securely.</p>
+              <h3>Pay by transfer</h3>
+              <p>Send the total to our account and upload your receipt.</p>
             </div>
           </li>
           <li>
             <span className="step-num">3</span>
             <div>
-              <h3>Enjoy</h3>
-              <p>We deliver to your area, or you pick up in Ojodu Berger.</p>
+              <h3>Track it live</h3>
+              <p>Watch it go from the oven to your door on your order page.</p>
             </div>
           </li>
         </ol>
@@ -177,26 +219,27 @@ export function Delivery({ delivery }) {
             {shown.length ? (
               <ul className="zones">
                 {shown.map((z) => (
-                  <li key={z.name}>
+                  <li key={z.id}>
                     <span>{z.name}</span>
                     <span className="num">{formatNaira(z.fee)}</span>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="zones-empty">
-                No delivery zone matches “{q}”. Message us on WhatsApp and we will tell you the fee.
-              </p>
+              <p className="zones-empty">No delivery area matches “{q}”. Message us on WhatsApp and we'll tell you the fee.</p>
             )}
           </div>
 
-          {delivery?.pickup && (
+          {delivery?.pickupAddress && (
             <aside className="pickup">
               <h3>Free pickup</h3>
-              <p>{delivery.pickup.replace(/^Pick up at /i, 'Pick up at ')}</p>
-              <a className="btn btn-outline" href={`tel:${BRAND.phoneIntl}`}>
-                Call {BRAND.phone}
-              </a>
+              <p>{delivery.pickupAddress}</p>
+              {delivery.pickupNote && <p className="muted">{delivery.pickupNote}</p>}
+              {store?.whatsapp && (
+                <a className="btn btn-outline" href={`https://wa.me/${store.whatsapp}`} {...external}>
+                  Chat on WhatsApp
+                </a>
+              )}
             </aside>
           )}
         </div>
@@ -205,7 +248,7 @@ export function Delivery({ delivery }) {
   );
 }
 
-export function Footer() {
+export function Footer({ store }) {
   const year = new Date().getFullYear();
   return (
     <footer id="contact" className="footer">
@@ -216,48 +259,59 @@ export function Footer() {
         <div className="footer-contact">
           <h2>Talk to us</h2>
           <dl>
-            <div>
-              <dt>WhatsApp</dt>
-              <dd>
-                <a href={BRAND.whatsapp} {...external}>
-                  Chat with us
-                </a>
-              </dd>
-            </div>
-            <div>
-              <dt>Call</dt>
-              <dd>
-                <a href={`tel:${BRAND.phoneIntl}`}>{BRAND.phone}</a>
-              </dd>
-            </div>
-            <div>
-              <dt>Email</dt>
-              <dd>
-                <a href={`mailto:${BRAND.email}`}>{BRAND.email}</a>
-              </dd>
-            </div>
-            <div>
-              <dt>Instagram</dt>
-              <dd>
-                <a href={`https://instagram.com/${BRAND.instagram}`} {...external}>
-                  @{BRAND.instagram}
-                </a>
-              </dd>
-            </div>
-            <div>
-              <dt>Address</dt>
-              <dd>{BRAND.address}</dd>
-            </div>
+            {store?.whatsapp && (
+              <div>
+                <dt>WhatsApp</dt>
+                <dd>
+                  <a href={`https://wa.me/${store.whatsapp}`} {...external}>
+                    Chat with us
+                  </a>
+                </dd>
+              </div>
+            )}
+            {store?.phone && (
+              <div>
+                <dt>Call</dt>
+                <dd>
+                  <a href={`tel:${store.phone.replace(/\s/g, '')}`}>{store.phone}</a>
+                </dd>
+              </div>
+            )}
+            {store?.email && (
+              <div>
+                <dt>Email</dt>
+                <dd>
+                  <a href={`mailto:${store.email}`}>{store.email}</a>
+                </dd>
+              </div>
+            )}
+            {store?.instagram && (
+              <div>
+                <dt>Instagram</dt>
+                <dd>
+                  <a href={`https://instagram.com/${store.instagram}`} {...external}>
+                    @{store.instagram}
+                  </a>
+                </dd>
+              </div>
+            )}
+            {store?.address && (
+              <div>
+                <dt>Address</dt>
+                <dd>{store.address}</dd>
+              </div>
+            )}
           </dl>
-          <a className="btn btn-orange" href={BRAND.storeUrl} {...external}>
-            Shop on Bumpa
-          </a>
+          <Link className="btn btn-orange" to="/track">
+            Track an order
+          </Link>
         </div>
       </div>
       <div className="wrap footer-base">
         <p>
           © {year} {BRAND.name}
         </p>
+        <Link to="/admin">Staff</Link>
       </div>
     </footer>
   );

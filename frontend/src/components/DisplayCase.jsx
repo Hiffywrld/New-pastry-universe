@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { artFor, defaultSizeKey } from '../menu/art.js';
 import { formatNaira, formatShort } from '../lib/format.js';
 import Sticker from './Sticker.jsx';
+import { track } from '../lib/analytics.js';
 
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
@@ -48,7 +49,7 @@ const Chevron = ({ dir }) => (
   </svg>
 );
 
-export default function DisplayCase({ items, active, open, picks, onActive, onOpen, onClose, onPick, caseRef }) {
+export default function DisplayCase({ items, active, open, picks, onActive, onOpen, onClose, onPick, onAdd, onViewCart, caseRef }) {
   const boxRef = useRef(null);
   const { w: W } = useBox(boxRef);
   const [hover, setHover] = useState(null);
@@ -76,10 +77,31 @@ export default function DisplayCase({ items, active, open, picks, onActive, onOp
   const pick = picks[item?.id] || {};
   const sizeKey = pick.size || (item ? defaultSizeKey(item) : null);
   const size = item?.sizes.find((s) => s.key === sizeKey) || item?.sizes[0];
-  const choiceIndex = pick.choice ?? Math.max(0, size?.choices.findIndex((c) => c.inStock) ?? 0);
+  const showChoices = Boolean(size && (size.choices.length > 1 || size.choices[0]?.label));
+  const firstInStock = Math.max(0, size?.choices.findIndex((c) => c.inStock) ?? 0);
+  const choiceIndex = pick.choice ?? firstInStock;
   const choice = size?.choices[choiceIndex];
-  const price = choice?.price ?? size?.priceMin;
   const choicePricesDiffer = size ? new Set(size.choices.map((c) => c.price)).size > 1 : false;
+  const [qty, setQty] = useState(1);
+  const [added, setAdded] = useState(false);
+
+  useEffect(() => {
+    setQty(1);
+    setAdded(false);
+  }, [item?.id, sizeKey, choiceIndex]);
+
+  useEffect(() => {
+    if (open && item) track('product_view', { product: item.id });
+  }, [open, item?.id]);
+
+  const addToCart = () => {
+    if (!choice?.inStock) return;
+    onAdd(
+      { variantId: choice.variantId, slug: item.id, name: item.name, size: size.label, option: choice.label, price: choice.price },
+      qty,
+    );
+    setAdded(true);
+  };
 
   const go = (step) => onActive((active + step + n) % n);
 
@@ -258,19 +280,19 @@ export default function DisplayCase({ items, active, open, picks, onActive, onOp
                 </fieldset>
               )}
 
-              {size?.choices.length > 0 && (
+              {showChoices && (
                 <fieldset className="option-group">
                   <legend>{choiceLegend(size.choices)}</legend>
                   <div className="chips">
                     {size.choices.map((c, i) => (
                       <button
                         type="button"
-                        key={c.label}
+                        key={c.variantId}
                         aria-pressed={i === choiceIndex}
                         disabled={!c.inStock}
                         onClick={() => onPick(item.id, { size: size.key, choice: i })}
                       >
-                        {c.label}
+                        {c.label || 'Regular'}
                         {choicePricesDiffer && <span className="chip-price">{formatNaira(c.price)}</span>}
                         {!c.inStock && <span className="chip-price">Sold out</span>}
                       </button>
@@ -280,12 +302,30 @@ export default function DisplayCase({ items, active, open, picks, onActive, onOp
               )}
 
               <div className="buy">
-                <p className="buy-price">{formatNaira(price)}</p>
-                <a className="btn btn-primary" href={size?.url} target="_blank" rel="noopener noreferrer">
-                  Order on Bumpa
-                </a>
+                <p className="buy-price">{formatNaira((choice?.price ?? size?.priceMin ?? 0) * qty)}</p>
+                <div className="qty" role="group" aria-label="Quantity">
+                  <button type="button" onClick={() => setQty((q) => Math.max(1, q - 1))} aria-label="One less" disabled={qty <= 1}>
+                    −
+                  </button>
+                  <span aria-live="polite">{qty}</span>
+                  <button type="button" onClick={() => setQty((q) => Math.min(50, q + 1))} aria-label="One more">
+                    +
+                  </button>
+                </div>
+                <button type="button" className="btn btn-primary" onClick={addToCart} disabled={!choice?.inStock}>
+                  {choice?.inStock ? 'Add to cart' : 'Sold out'}
+                </button>
               </div>
-              <p className="fine">Opens our Bumpa store, where you choose delivery or pickup and pay.</p>
+              {added ? (
+                <p className="fine added">
+                  Added to your cart.{' '}
+                  <button type="button" className="text-btn" onClick={onViewCart}>
+                    View cart
+                  </button>
+                </p>
+              ) : (
+                <p className="fine">Pay by bank transfer at checkout. Delivery across Lagos or free pickup.</p>
+              )}
             </div>
           </div>
         )}

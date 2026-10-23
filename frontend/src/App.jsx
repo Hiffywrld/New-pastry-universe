@@ -1,50 +1,67 @@
-import { useRef, useState } from 'react';
-import DisplayCase from './components/DisplayCase.jsx';
-import { Delivery, Footer, Header, Intro, MenuBoard, Ticker } from './components/Sections.jsx';
-import { useMenu } from './menu/useMenu.js';
+import { useEffect } from 'react';
+import { Outlet, Route, Routes, useLocation } from 'react-router-dom';
+import CartDrawer from './components/CartDrawer.jsx';
+import { Footer, Header } from './components/Sections.jsx';
+import { MenuProvider, useMenu } from './menu/useMenu.js';
+import { CartProvider } from './state/cart.jsx';
+import { startHeartbeat, track } from './lib/analytics.js';
+import Shop from './pages/Shop.jsx';
+import Checkout from './pages/Checkout.jsx';
+import OrderPage from './pages/OrderPage.jsx';
+import TrackLookup from './pages/TrackLookup.jsx';
+import AdminLayout from './admin/AdminLayout.jsx';
+import AdminLogin from './admin/AdminLogin.jsx';
+import Dashboard from './admin/Dashboard.jsx';
+import OrdersBoard from './admin/OrdersBoard.jsx';
+import Payments from './admin/Payments.jsx';
+import Settings from './admin/Settings.jsx';
 
-export default function App() {
-  const menu = useMenu();
-  const items = menu.items;
-  const [active, setActive] = useState(0);
-  const [open, setOpen] = useState(false);
-  const [picks, setPicks] = useState({});
-  const caseRef = useRef(null);
+function ShopLayout() {
+  const location = useLocation();
+  const { menu } = useMenu();
 
-  const safeActive = Math.min(active, Math.max(0, items.length - 1));
+  useEffect(() => {
+    startHeartbeat();
+  }, []);
 
-  const viewItem = (id) => {
-    const i = items.findIndex((it) => it.id === id);
-    if (i < 0) return;
-    setActive(i);
-    setOpen(true);
-    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    caseRef.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
-  };
+  useEffect(() => {
+    track('page_view');
+    if (!location.hash) window.scrollTo(0, 0);
+  }, [location.pathname]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
-      <Header />
+      <Header simple={location.pathname !== '/'} />
       <main>
-        <Intro />
-        {items.length > 0 && (
-          <DisplayCase
-            items={items}
-            active={safeActive}
-            open={open}
-            picks={picks}
-            caseRef={caseRef}
-            onActive={setActive}
-            onOpen={() => setOpen(true)}
-            onClose={() => setOpen(false)}
-            onPick={(id, pick) => setPicks((p) => ({ ...p, [id]: pick }))}
-          />
-        )}
-        <Ticker />
-        <MenuBoard items={items} onView={viewItem} />
-        <Delivery delivery={menu.delivery} />
+        <Outlet />
       </main>
-      <Footer />
+      <Footer store={menu?.store} />
+      <CartDrawer />
     </>
+  );
+}
+
+export default function App() {
+  return (
+    <CartProvider>
+      <MenuProvider>
+        <Routes>
+          <Route element={<ShopLayout />}>
+            <Route index element={<Shop />} />
+            <Route path="checkout" element={<Checkout />} />
+            <Route path="order/:token" element={<OrderPage />} />
+            <Route path="track" element={<TrackLookup />} />
+            <Route path="*" element={<Shop />} />
+          </Route>
+          <Route path="admin/login" element={<AdminLogin />} />
+          <Route path="admin" element={<AdminLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="orders" element={<OrdersBoard />} />
+            <Route path="payments" element={<Payments />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
+        </Routes>
+      </MenuProvider>
+    </CartProvider>
   );
 }

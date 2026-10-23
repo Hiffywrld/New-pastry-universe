@@ -1,0 +1,1050 @@
+{
+ "items": [
+  {
+   "id": "banana-bread",
+   "name": "Banana Bread",
+   "category": "Banana bread",
+   "tag": "Bestseller",
+   "description": "Our classic loaf. Get it plain or topped with raisins, coconut chips, chocolate chips or almond nuts. The mini feeds one person.",
+   "sizes": [
+    {
+     "key": "mini",
+     "label": "Mini",
+     "choices": [
+      {
+       "variantId": 1,
+       "label": "No toppings",
+       "price": 2000,
+       "inStock": true
+      },
+      {
+       "variantId": 2,
+       "label": "Raisins",
+       "price": 2000,
+       "inStock": true
+      },
+      {
+       "variantId": 3,
+       "label": "Almond nuts",
+       "price": 2000,
+       "inStock": true
+      },
+      {
+       "variantId": 4,
+       "label": "Chocolate chips",
+       "price": 2000,
+       "inStock": true
+      },
+      {
+       "variantId": 5,
+       "label": "Coconut chips",
+       "price": 2000,
+       "inStock": true
+      }
+     ],
+     "priceMin": 2000,
+     "priceMax": 2000,
+     "inStock": true
+    },
+    {
+     "key": "medium",
+     "label": "Medium",
+     "choices": [
+      {
+       "variantId": 6,
+       "label": "No toppings",
+       "price": 3000,
+       "inStock": true
+      },
+      {
+       "variantId": 7,
+       "label": "Coconut chips",
+       "price": 3500,
+       "inStock": true
+      },
+      {
+       "variantId": 8,
+       "label": "Chocolate chips",
+       "price": 3500,
+       "inStock": true
+      },
+      {
+       "variantId": 9,
+       "label": "Raisins",
+       "price": 3500,
+       "inStock": true
+      },
+      {
+       "variantId": 10,
+       "label": "Almond nuts",
+       "price": 3500,
+       "inStock": true
+      }
+     ],
+     "priceMin": 3000,
+     "priceMax": 3500,
+     "inStock": true
+    },
+    {
+     "key": "large",
+     "label": "Large",
+     "choices": [
+      {
+       "variantId": 11,
+       "label": "Raisins",
+       "price": 7500,
+       "inStock": true
+      },
+      {
+       "variantId": 12,
+       "label": "Coconut chips",
+       "price": 7500,
+       "inStock": true
+      },
+      {
+       "variantId": 13,
+       "label": "Chocolate chips",
+       "price": 7500,
+       "inStock": true
+      },
+      {
+       "variantId": 14,
+       "label": "Almond nuts",
+       "price": 7500,
+       "inStock": true
+      },
+      {
+       "variantId": 15,
+       "label": "No toppings",
+       "price": 7500,
+       "inStock": true
+      }
+     ],
+     "priceMin": 7500,
+     "priceMax": 7500,
+     "inStock": true
+    },
+    {
+     "key": "pan",
+     "label": "Pan-sized",
+     "choices": [
+      {
+       "variantId": 16,
+       "label": "",
+       "price": 8000,
+       "inStock": true
+      }
+     ],
+     "priceMin": 8000,
+     "priceMax": 8000,
+     "inStock": true
+    },
+    {
+     "key": "jumbo",
+     "label": "Jumbo",
+     "choices": [
+      {
+       "variantId": 17,
+       "label": "No toppings",
+       "price": 15000,
+       "inStock": true
+      },
+      {
+       "variantId": 18,
+       "label": "Raisins and coconut chips",
+       "price": 16500,
+       "inStock": true
+      },
+      {
+       "variantId": 19,
+       "label": "Coconut chips and almond nuts",
+       "price": 16500,
+       "inStock": true
+      },
+      {
+       "variantId": 20,
+       "label": "Chocolate chips and raisins",
+       "price": 16500,
+       "inStock": true
+      }
+     ],
+     "priceMin": 15000,
+     "priceMax": 16500,
+     "inStock": true
+    },
+    {
+     "key": "family",
+     "label": "Family tray",
+     "choices": [
+      {
+       "variantId": 21,
+       "label": "No toppings",
+       "price": 19000,
+       "inStock": true
+      },
+      {
+       "variantId": 22,
+       "label": "Raisins, coconut chips and chocolate chips",
+       "price": 22500,
+       "inStock": true
+      },
+      {
+       "variantId": 23,
+       "label": "Coconut chips, almond nuts and chocolate chips",
+       "price": 22500,
+       "inStock": true
+      },
+      {
+       "variantId": 24,
+       "label": "Chocolate chips, raisins and almond nuts",
+       "price": 22500,
+       "inStock": true
+      }
+     ],
+     "priceMin": 19000,
+     "priceMax": 22500,
+     "inStock": true
+    }
+   ],
+   "priceMin": 2000,
+   "inStock": true
+  },
+  {
+   "id": "birthday",
+   "name": "Birthday Banana Cake",
+   "category": "Cakes",
+   "description": "Loaded with assorted nuts inside and covered with chocolate or any other topping. Made for birthdays and gifts.",
+   "sizes": [
+    {
+     "key": "7in",
+     "label": "7-inch",
+     "choices": [
+      {
+       "variantId": 25,
+       "label": "",
+       "price": 21750,
+       "inStock": true
+      }
+     ],
+     "priceMin": 21750,
+     "priceMax": 21750,
+     "inStock": true
+    },
+    {
+     "key": "8in",
+     "label": "8-inch",
+     "choices": [
+      {
+       "variantId": 26,
+       "label": "",
+       "price": 18750,
+       "inStock": true
+      }
+     ],
+     "priceMin": 18750,
+     "priceMax": 18750,
+     "inStock": true
+    },
+    {
+     "key": "12in",
+     "label": "12-inch square",
+     "choices": [
+      {
+       "variantId": 27,
+       "label": "",
+       "price": 48500,
+       "inStock": true
+      }
+     ],
+     "priceMin": 48500,
+     "priceMax": 48500,
+     "inStock": true
+    },
+    {
+     "key": "double",
+     "label": "Double layer",
+     "choices": [
+      {
+       "variantId": 28,
+       "label": "",
+       "price": 48500,
+       "inStock": true
+      }
+     ],
+     "priceMin": 48500,
+     "priceMax": 48500,
+     "inStock": true
+    }
+   ],
+   "priceMin": 18750,
+   "inStock": true
+  },
+  {
+   "id": "oats",
+   "name": "Oats Banana Bread",
+   "category": "Banana bread",
+   "tag": "Fitfam",
+   "description": "Made with oats and other natural ingredients, for anyone on a fitfam journey.",
+   "sizes": [
+    {
+     "key": "mini",
+     "label": "Mini",
+     "choices": [
+      {
+       "variantId": 29,
+       "label": "No toppings",
+       "price": 2500,
+       "inStock": true
+      },
+      {
+       "variantId": 30,
+       "label": "Raisins",
+       "price": 2800,
+       "inStock": true
+      },
+      {
+       "variantId": 31,
+       "label": "Sesame seeds",
+       "price": 2800,
+       "inStock": true
+      },
+      {
+       "variantId": 32,
+       "label": "Coconut chips",
+       "price": 2800,
+       "inStock": true
+      },
+      {
+       "variantId": 33,
+       "label": "Almond nuts",
+       "price": 2800,
+       "inStock": true
+      },
+      {
+       "variantId": 34,
+       "label": "Chocolate chips",
+       "price": 2800,
+       "inStock": true
+      }
+     ],
+     "priceMin": 2500,
+     "priceMax": 2800,
+     "inStock": true
+    },
+    {
+     "key": "medium",
+     "label": "Medium",
+     "choices": [
+      {
+       "variantId": 35,
+       "label": "No toppings",
+       "price": 4000,
+       "inStock": true
+      },
+      {
+       "variantId": 36,
+       "label": "Almond nuts and coconut chips",
+       "price": 4500,
+       "inStock": true
+      },
+      {
+       "variantId": 37,
+       "label": "Coconut chips and raisins",
+       "price": 4500,
+       "inStock": true
+      },
+      {
+       "variantId": 38,
+       "label": "Almond nuts and raisins",
+       "price": 4500,
+       "inStock": true
+      },
+      {
+       "variantId": 39,
+       "label": "Chocolate chips",
+       "price": 4500,
+       "inStock": true
+      },
+      {
+       "variantId": 40,
+       "label": "Sesame seeds and raisins",
+       "price": 4500,
+       "inStock": true
+      }
+     ],
+     "priceMin": 4000,
+     "priceMax": 4500,
+     "inStock": true
+    },
+    {
+     "key": "large",
+     "label": "Large",
+     "choices": [
+      {
+       "variantId": 41,
+       "label": "No toppings",
+       "price": 6000,
+       "inStock": true
+      },
+      {
+       "variantId": 42,
+       "label": "Coconut chips",
+       "price": 6700,
+       "inStock": true
+      },
+      {
+       "variantId": 43,
+       "label": "Groundnuts",
+       "price": 6700,
+       "inStock": true
+      },
+      {
+       "variantId": 44,
+       "label": "Almond nuts",
+       "price": 6700,
+       "inStock": true
+      },
+      {
+       "variantId": 45,
+       "label": "Raisins",
+       "price": 6700,
+       "inStock": true
+      },
+      {
+       "variantId": 46,
+       "label": "Chocolate chips",
+       "price": 6700,
+       "inStock": true
+      }
+     ],
+     "priceMin": 6000,
+     "priceMax": 6700,
+     "inStock": true
+    }
+   ],
+   "priceMin": 2500,
+   "inStock": true
+  },
+  {
+   "id": "petit-box",
+   "name": "Petit Loaf Box",
+   "category": "Gift boxes",
+   "tag": "Gift",
+   "description": "Six mini banana breads with different exotic toppings. Perfect for gifting friends and loved ones, with a handwritten note if you like.",
+   "sizes": [
+    {
+     "key": "regular",
+     "label": "Regular",
+     "choices": [
+      {
+       "variantId": 47,
+       "label": "Handwritten note",
+       "price": 20100,
+       "inStock": true
+      },
+      {
+       "variantId": 48,
+       "label": "No note",
+       "price": 18500,
+       "inStock": true
+      }
+     ],
+     "priceMin": 18500,
+     "priceMax": 20100,
+     "inStock": true
+    }
+   ],
+   "priceMin": 18500,
+   "inStock": true
+  },
+  {
+   "id": "chinchin",
+   "name": "Chin-Chin",
+   "category": "Chin-chin",
+   "description": "Delicious, crunchy chin-chin, plain or peppered.",
+   "sizes": [
+    {
+     "key": "200g",
+     "label": "200g pouch",
+     "choices": [
+      {
+       "variantId": 49,
+       "label": "Plain",
+       "price": 2000,
+       "inStock": true
+      },
+      {
+       "variantId": 50,
+       "label": "Peppered",
+       "price": 2200,
+       "inStock": true
+      }
+     ],
+     "priceMin": 2000,
+     "priceMax": 2200,
+     "inStock": true
+    },
+    {
+     "key": "400g",
+     "label": "400g pouch",
+     "choices": [
+      {
+       "variantId": 51,
+       "label": "Plain",
+       "price": 3200,
+       "inStock": true
+      },
+      {
+       "variantId": 52,
+       "label": "Peppered",
+       "price": 3500,
+       "inStock": true
+      }
+     ],
+     "priceMin": 3200,
+     "priceMax": 3500,
+     "inStock": true
+    },
+    {
+     "key": "1kg",
+     "label": "1kg half bucket",
+     "choices": [
+      {
+       "variantId": 53,
+       "label": "Plain",
+       "price": 8500,
+       "inStock": true
+      },
+      {
+       "variantId": 54,
+       "label": "Peppered",
+       "price": 8900,
+       "inStock": true
+      }
+     ],
+     "priceMin": 8500,
+     "priceMax": 8900,
+     "inStock": true
+    },
+    {
+     "key": "2kg",
+     "label": "2kg paint bucket",
+     "choices": [
+      {
+       "variantId": 55,
+       "label": "Plain",
+       "price": 18000,
+       "inStock": true
+      },
+      {
+       "variantId": 56,
+       "label": "Peppered",
+       "price": 19000,
+       "inStock": true
+      }
+     ],
+     "priceMin": 18000,
+     "priceMax": 19000,
+     "inStock": true
+    }
+   ],
+   "priceMin": 2000,
+   "inStock": true
+  },
+  {
+   "id": "lemon",
+   "name": "Lemon Infused Banana Bread",
+   "category": "Banana bread",
+   "description": "Banana bread infused with fresh lemon juice and lemon rind.",
+   "sizes": [
+    {
+     "key": "mini",
+     "label": "Mini",
+     "choices": [
+      {
+       "variantId": 57,
+       "label": "No toppings",
+       "price": 1900,
+       "inStock": true
+      },
+      {
+       "variantId": 58,
+       "label": "Raisins",
+       "price": 2200,
+       "inStock": true
+      },
+      {
+       "variantId": 59,
+       "label": "Banana toppings",
+       "price": 2200,
+       "inStock": true
+      },
+      {
+       "variantId": 60,
+       "label": "Coconut chips",
+       "price": 2200,
+       "inStock": true
+      },
+      {
+       "variantId": 61,
+       "label": "Chocolate chips",
+       "price": 2200,
+       "inStock": true
+      }
+     ],
+     "priceMin": 1900,
+     "priceMax": 2200,
+     "inStock": true
+    },
+    {
+     "key": "medium",
+     "label": "Medium",
+     "choices": [
+      {
+       "variantId": 62,
+       "label": "No toppings",
+       "price": 3000,
+       "inStock": true
+      },
+      {
+       "variantId": 63,
+       "label": "Raisins",
+       "price": 3500,
+       "inStock": true
+      },
+      {
+       "variantId": 64,
+       "label": "Banana toppings",
+       "price": 3500,
+       "inStock": true
+      },
+      {
+       "variantId": 65,
+       "label": "Coconut chips",
+       "price": 3500,
+       "inStock": true
+      },
+      {
+       "variantId": 66,
+       "label": "Chocolate chips",
+       "price": 3500,
+       "inStock": true
+      }
+     ],
+     "priceMin": 3000,
+     "priceMax": 3500,
+     "inStock": true
+    },
+    {
+     "key": "large",
+     "label": "Large",
+     "choices": [
+      {
+       "variantId": 67,
+       "label": "No toppings",
+       "price": 5200,
+       "inStock": true
+      },
+      {
+       "variantId": 68,
+       "label": "Raisins",
+       "price": 6000,
+       "inStock": true
+      },
+      {
+       "variantId": 69,
+       "label": "Banana toppings",
+       "price": 6000,
+       "inStock": true
+      },
+      {
+       "variantId": 70,
+       "label": "Coconut chips",
+       "price": 6000,
+       "inStock": true
+      },
+      {
+       "variantId": 71,
+       "label": "Chocolate",
+       "price": 6000,
+       "inStock": true
+      }
+     ],
+     "priceMin": 5200,
+     "priceMax": 6000,
+     "inStock": true
+    }
+   ],
+   "priceMin": 1900,
+   "inStock": true
+  },
+  {
+   "id": "red-velvet",
+   "name": "Red Velvet Cake",
+   "category": "Cakes",
+   "description": "Succulent, moist red dessert cake.",
+   "sizes": [
+    {
+     "key": "mini",
+     "label": "Mini",
+     "choices": [
+      {
+       "variantId": 72,
+       "label": "",
+       "price": 2000,
+       "inStock": true
+      }
+     ],
+     "priceMin": 2000,
+     "priceMax": 2000,
+     "inStock": true
+    },
+    {
+     "key": "medium",
+     "label": "Medium",
+     "choices": [
+      {
+       "variantId": 73,
+       "label": "",
+       "price": 3000,
+       "inStock": true
+      }
+     ],
+     "priceMin": 3000,
+     "priceMax": 3000,
+     "inStock": true
+    }
+   ],
+   "priceMin": 2000,
+   "inStock": true
+  },
+  {
+   "id": "cubed",
+   "name": "Cubed Chin-Chin",
+   "category": "Chin-chin",
+   "description": "Cut into cubes. Delicious and crunchy, plain or peppered.",
+   "sizes": [
+    {
+     "key": "200g",
+     "label": "200g pouch",
+     "choices": [
+      {
+       "variantId": 74,
+       "label": "Plain",
+       "price": 1700,
+       "inStock": true
+      },
+      {
+       "variantId": 75,
+       "label": "Peppered",
+       "price": 2000,
+       "inStock": true
+      }
+     ],
+     "priceMin": 1700,
+     "priceMax": 2000,
+     "inStock": true
+    },
+    {
+     "key": "400g",
+     "label": "400g pouch",
+     "choices": [
+      {
+       "variantId": 76,
+       "label": "Plain",
+       "price": 3500,
+       "inStock": true
+      },
+      {
+       "variantId": 77,
+       "label": "Peppered",
+       "price": 3900,
+       "inStock": true
+      }
+     ],
+     "priceMin": 3500,
+     "priceMax": 3900,
+     "inStock": true
+    },
+    {
+     "key": "1kg",
+     "label": "1kg half bucket",
+     "choices": [
+      {
+       "variantId": 78,
+       "label": "Plain",
+       "price": 8500,
+       "inStock": true
+      },
+      {
+       "variantId": 79,
+       "label": "Peppered",
+       "price": 8900,
+       "inStock": true
+      }
+     ],
+     "priceMin": 8500,
+     "priceMax": 8900,
+     "inStock": true
+    },
+    {
+     "key": "2kg",
+     "label": "2kg paint bucket",
+     "choices": [
+      {
+       "variantId": 80,
+       "label": "Plain",
+       "price": 16500,
+       "inStock": true
+      },
+      {
+       "variantId": 81,
+       "label": "Peppered",
+       "price": 17500,
+       "inStock": true
+      }
+     ],
+     "priceMin": 16500,
+     "priceMax": 17500,
+     "inStock": true
+    }
+   ],
+   "priceMin": 1700,
+   "inStock": true
+  },
+  {
+   "id": "dates",
+   "name": "Dates Powder Bread",
+   "category": "Banana bread",
+   "tag": "No sugar",
+   "description": "Made with whole wheat flour and dates powder, with no sugar added.",
+   "sizes": [
+    {
+     "key": "regular",
+     "label": "Regular",
+     "choices": [
+      {
+       "variantId": 82,
+       "label": "Coconut chips",
+       "price": 2050,
+       "inStock": true
+      },
+      {
+       "variantId": 83,
+       "label": "Almond nuts",
+       "price": 2050,
+       "inStock": true
+      },
+      {
+       "variantId": 84,
+       "label": "Chocolate chips",
+       "price": 2050,
+       "inStock": true
+      },
+      {
+       "variantId": 85,
+       "label": "Raisins",
+       "price": 2050,
+       "inStock": true
+      }
+     ],
+     "priceMin": 2050,
+     "priceMax": 2050,
+     "inStock": true
+    }
+   ],
+   "priceMin": 2050,
+   "inStock": true
+  }
+ ],
+ "delivery": {
+  "pickupAddress": "No. 10 Johnson Street, Kajola, Ojodu Berger",
+  "pickupNote": "Please call 0901 720 2788 before you come.",
+  "zones": [
+   {
+    "id": 1,
+    "name": "Ojodu / Omole Phase 1&2 / Magodo phase 1 / Olowora",
+    "areas": "Deliveries to Ojodu /Omole Phase 1&2 /Magodo phase 1 /Olowora",
+    "fee": 2000
+   },
+   {
+    "id": 2,
+    "name": "Ikeja",
+    "areas": "",
+    "fee": 2500
+   },
+   {
+    "id": 3,
+    "name": "Ogba / Magodo Shangisha",
+    "areas": "To Ogba and Magodo Shangisha",
+    "fee": 2500
+   },
+   {
+    "id": 4,
+    "name": "Agege / Maryland / Ogudu",
+    "areas": "Deliveries to Ikeja, Agege, Maryland and Ogudu Axis",
+    "fee": 3000
+   },
+   {
+    "id": 5,
+    "name": "Ikosi / Ketu / Alapere / Maryland / Oworo / Ilupeju",
+    "areas": "Deliveries Ikosi /Ketu /Alapere /Maryland /Oworo /Ilupeju",
+    "fee": 3000
+   },
+   {
+    "id": 6,
+    "name": "Opic Estate",
+    "areas": "Deliveries to Opic Estate",
+    "fee": 3000
+   },
+   {
+    "id": 7,
+    "name": "Iyana Ipaja / Egbeda",
+    "areas": "To Iyana-Ipaja and Egbeda",
+    "fee": 3500
+   },
+   {
+    "id": 8,
+    "name": "Ojokoro / Command / Iju fagba / Abule egba",
+    "areas": "Deliveries to Ojokoro /Command /Iju fagba / Abule egba",
+    "fee": 3500
+   },
+   {
+    "id": 9,
+    "name": "Akoka / Oyingbo / Costain / Iganmu",
+    "areas": "Deliveries to /Akoka /Oyingbo /Costain /Iganmu",
+    "fee": 4000
+   },
+   {
+    "id": 10,
+    "name": "Bariga / Shomolu / Yaba / Oshodi / Mushin",
+    "areas": "Deliveries to Bariga /Shomolu /Yaba /Oshodi /Mushin",
+    "fee": 4000
+   },
+   {
+    "id": 11,
+    "name": "Igando / Ikotun / Idimu / Ejigbo / Ipaja",
+    "areas": "To Igando, Ikotun, Ejigbo, Ipaja Axis",
+    "fee": 4000
+   },
+   {
+    "id": 12,
+    "name": "Yaba / Surulere / Shomolu / Bariga",
+    "areas": "To Yaba, Surulere, Shomolu and Bariga",
+    "fee": 4000
+   },
+   {
+    "id": 13,
+    "name": "Alakuko",
+    "areas": "Deliveries to Alakuko",
+    "fee": 4500
+   },
+   {
+    "id": 14,
+    "name": "Ijegun / Ago palace",
+    "areas": "To Ijegun and Ago-palace axis",
+    "fee": 4500
+   },
+   {
+    "id": 15,
+    "name": "Ikorodu",
+    "areas": "Deliveries to Ikorodu",
+    "fee": 4500
+   },
+   {
+    "id": 16,
+    "name": "Apapa",
+    "areas": "Deliveries to Apapa Axis",
+    "fee": 5000
+   },
+   {
+    "id": 17,
+    "name": "Festac town",
+    "areas": "Deliveries to Festac town Axis",
+    "fee": 5000
+   },
+   {
+    "id": 18,
+    "name": "Festac Town / Ayobo",
+    "areas": "To Festac Town and Ayobo axis",
+    "fee": 5000
+   },
+   {
+    "id": 19,
+    "name": "Lagos Island / VI",
+    "areas": "Deliveries to Lagos Island /VI",
+    "fee": 5000
+   },
+   {
+    "id": 20,
+    "name": "Lekki phase 1",
+    "areas": "Deliveries to Lekki phase 1",
+    "fee": 5500
+   },
+   {
+    "id": 21,
+    "name": "Chevron / Lekki phase 2",
+    "areas": "Deliveries to Chevron /Lekki phase 2",
+    "fee": 6000
+   },
+   {
+    "id": 22,
+    "name": "Satelite town",
+    "areas": "Delivery to Satellite town",
+    "fee": 6000
+   },
+   {
+    "id": 23,
+    "name": "Ajah / Ikota / Orchid Road / VGC",
+    "areas": "Deliveries to Ajah /Ikota /Orchid Road /VGC",
+    "fee": 7000
+   },
+   {
+    "id": 24,
+    "name": "Sangotedo",
+    "areas": "Deliveries to Sangotedo",
+    "fee": 8000
+   },
+   {
+    "id": 25,
+    "name": "Awoyaya",
+    "areas": "Deliveries to Awoyaya Axis",
+    "fee": 9000
+   },
+   {
+    "id": 26,
+    "name": "Ibeju Lekki",
+    "areas": "Ibeju Lekki axis",
+    "fee": 12000
+   },
+   {
+    "id": 27,
+    "name": "Epe",
+    "areas": "Deliveries to Epe axis",
+    "fee": 15000
+   }
+  ]
+ },
+ "store": {
+  "phone": "0901 720 2788",
+  "whatsapp": "2349017202788",
+  "email": "pastryuniversee@gmail.com",
+  "instagram": "pastryuniverse",
+  "address": "8b Adefeyisan Street, Olawaiye Estate, Olowora, Lagos",
+  "ticker": [
+   "Fresh banana bread",
+   "Premium quality snacks for premium clients",
+   "Delivery across Lagos",
+   "Birthday banana cakes",
+   "Chin-chin by the bucket",
+   "Pickup in Ojodu Berger"
+  ],
+  "announcement": "",
+  "shopOpen": true,
+  "timeSlots": [
+   "9am – 12pm",
+   "12pm – 3pm",
+   "3pm – 6pm"
+  ]
+ }
+}
